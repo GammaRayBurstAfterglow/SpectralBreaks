@@ -55,3 +55,8 @@ t_day =
 d_L28 = 
 # luminosity distance in units of 10^28 cm
 # ned wright cosmology calculator to convert z to d_L28
+
+spectral_index = (pow((p-1), 3/5)) / (pow((3p+2), 3/5))
+
+#When b = 1 beta_1 = 2 and beta_2 = 1/3
+nu_sa = 1.24 * spectral_index * (10**9) * pow((1+z), -1) * pow(epsilon_e_bar, -1) * pow(epsilon_B, 1/5) * pow(n_0, 3/5) * pow(E_52, 1/5)
