@@ -108,16 +108,19 @@ nu_7_ext =
 # b = 7, ext for k = 0
 
 #Lily's Section
-def F(): 
-# function (nu) = flux at desired frequency, with passed argument of F_nu_b, nu_b, s, beta_1, beta_2
+def F(nu_b_ext,nu,nu_b,s,beta_1,beta_2):
+    return nu_b_ext*(((nu/nu_b)**(-s*beta_1))+((nu/nu_b)**(-s*beta_2))**(-1/s))
 # implementation of eqn 1
+# function = flux at desired frequency, with passed argument of nu_b_ext, nu_b, s, beta_1, beta_2
 
-def F_tilde():
-# implementation of eqn 4
-# function (nu) = flux at desired frequency, with passed argument of 
+def F_tilde(nu,nu_b,s,beta_1,beta_2):
+    return (1+(nu/nu_b)**(s*(beta_1-beta_2)))**(-1/s)
+# implementation of eqn 4, with passed argument of nu_b, s, beta_1, beta_2
 
-def (): 
-# implementation of eqn 5	
+def F5(nu,s,beta_1,beta_2):
+    return F(nu_1_ext,nu,nu_1,s,beta_1,beta_2)*F_tilde(nu,nu_2,s,beta_1,beta_2)*F_tilde(nu,nu_3,s,beta_1,beta_2)
+# implementation of eqn 5, with passed argument of nu, s, beta_1, beta_2
 
-def ():
-# implementation of eqn 9
+def F9(nu,s,beta_1,beta_2):
+    return F(nu_7_ext,nu,nu_7,s,beta_1,beta_2)*F_tilde(nu,nu_10,s,beta_1,beta_2)*F_tilde(nu,nu_11,s,beta_1,beta_2)*F_tilde(nu,nu_9,s,beta_1,beta_2)
+# implementation of eqn 9, with passed argument of nu, s, beta_1, beta_2
