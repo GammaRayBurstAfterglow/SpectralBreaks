@@ -73,8 +73,22 @@ nu_3 =
 
 
 #Damien's Section
-nu_7 = 
+
+
+#I think this could be put into some sort of if statement / case system this could be more elegant
+var_7_1 = ( ((3p-1)**(8/5)) / ((3p+2)**(8/5)) )
+var_7_2 = (1+z)**(-13/10)
+var_7_3 = (epsilon_e_bar**(-8/5))
+var_7_4 = (epsilon_B**(-2/5))
+var_7_5 = (n_0**(3/10))
+var_7_6 = (E_52**(-1/10))
+var_7_7 = (t_day**(3/10))
+
+nu_7 = 1.12 * var_7_1 * (10**8) * var_7_2 * var_7_3 * var_7_4 * var_7_5 * var_7_6 * var_7_7
 # b = 7, for k = 0
+# beta_1 = 2
+# beta_2 = 11/8
+# nu_b = nu_ac
 
 nu_9 = 
 # b = 9, for k = 0
