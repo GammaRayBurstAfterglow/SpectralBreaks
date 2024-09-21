@@ -60,17 +60,47 @@ d_L28 =
 
 
 #Krupa's Section
+
 #When b = 1 beta_1 = 2 and beta_2 = 1/3
-var_1_1 = (pow((p-1), 3/5)) / (pow((3p+2), 3/5))
-nu_1 = 1.24 * var_1_1 * (10**9) * pow((1+z), -1) * pow(epsilon_e_bar, -1) * pow(epsilon_B, 1/5) * pow(n_0, 3/5) * pow(E_52, 1/5)
-# b = 1, for k = 0
+#b = 1, for k = 0
+#nu_b = nu_sa
 
-nu_2 =
-# b = 2, for k = 0
+var_1_1 = (pow((p - 1), 3/5)) / (pow((3*p + 2), 3/5))
+var_1_2 = pow((1 + z), -1)
+var_1_3 = pow(epsilon_e_bar, -1)
+var_1_4 = pow(epsilon_B, 1/5)
+var_1_5 = pow(n_0, 3/5)
+var_1_6 = pow(E_52, 1/5)
 
-nu_3 = 
-# b = 3, for k = 0
+nu_1 = 1.24 * var_1_1 * (10**9) * var_1_2 * var_1_3 * var_1_4 * var_1_5 * var_1_6
 
+#When b = 2, for k = 0
+#beta_1 = 1/3, beta_2 = (1-p)/2
+#nu_b = nu_m
+
+var_2_1 = (p - 0.67) * (10**15)
+var_2_2 = pow(1 + z), 1/2)
+var_2_3 = pow(E_52, 1/2)
+var_2_4 = pow(epsilon_e_bar, 2)
+var_2_5 = pow(epsilon_B, 1/2)
+var_2_6 = pow(t_day, -3/2)
+
+nu_2 = 3.71 * var_2_1 * var_2_2 * var_2_3 * var_2_4 * var_2_5 * var_2_6
+
+#When b = 3, for k = 0
+#beta_1 = (1 - p)/2, beta_2 = -p/2
+#nu_b = nu_c
+
+var_3_1 = (p - 0.46) * (10**13)
+var_3_2 = pow(e, -1.16p) # is the e here the function e or something else
+# if it is exponential function: math.exp(-1.16*p)
+var_3_3 = pow((1 + z), -1/2)
+var_3_4 = pow(epsilon_B, -3/2)
+var_3_5 = pow(n_0, 1)
+var_3_6 = pow(E_52, -1/2)
+var_3_7 = pow(t_day, -1/2)
+              
+nu_3 = 6.37 * var_3_1 * var_3_2 * var_3_3 * var_3_4 * var_3_5 * var_3_6 * var_3_7
 
 #Damien's Section
 
@@ -109,7 +139,7 @@ nu_7_ext =
 
 #Lily's Section
 def F(nu_b_ext,nu,nu_b,s,beta_1,beta_2):
-    return nu_b_ext*(((nu/nu_b)**(-s*beta_1))+((nu/nu_b)**(-s*beta_2))**(-1/s))
+    return nu_b_ext*(((nu/nu_b)**(-s*beta_1))+((nu/nu_b)**(-s*beta_2))**(-1/s))  #KP - Lily I think you are missing a parenthasis
 # implementation of eqn 1
 # function = flux at desired frequency, with passed argument of nu_b_ext, nu_b, s, beta_1, beta_2
 
