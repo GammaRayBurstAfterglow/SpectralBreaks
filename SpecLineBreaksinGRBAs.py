@@ -49,7 +49,7 @@ E_52 =
 A_star = 
 # height of the density function for k = 2
 
-t_day = 
+t_days = 
 # time since explosion in units of days in the observer frame(?)
 # 0.01 and 100
 
@@ -79,11 +79,11 @@ nu_1 = 1.24 * var_1_1 * (10**9) * var_1_2 * var_1_3 * var_1_4 * var_1_5 * var_1_
 #nu_b = nu_m
 
 var_2_1 = (p - 0.67) * (10**15)
-var_2_2 = pow(1 + z), 1/2)
+var_2_2 = pow((1 + z), 1/2)
 var_2_3 = pow(E_52, 1/2)
 var_2_4 = pow(epsilon_e_bar, 2)
 var_2_5 = pow(epsilon_B, 1/2)
-var_2_6 = pow(t_day, -3/2)
+var_2_6 = pow(t_days, -3/2)
 
 nu_2 = 3.71 * var_2_1 * var_2_2 * var_2_3 * var_2_4 * var_2_5 * var_2_6
 
@@ -98,33 +98,59 @@ var_3_3 = pow((1 + z), -1/2)
 var_3_4 = pow(epsilon_B, -3/2)
 var_3_5 = pow(n_0, 1)
 var_3_6 = pow(E_52, -1/2)
-var_3_7 = pow(t_day, -1/2)
+var_3_7 = pow(t_days, -1/2)
               
 nu_3 = 6.37 * var_3_1 * var_3_2 * var_3_3 * var_3_4 * var_3_5 * var_3_6 * var_3_7
 
+
 #Damien's Section
 
+# b = 7, for k = 0
 
-#I think this could be put into some sort of if statement / case system this could be more elegant
+#dummy variables to shorten nu_7
 var_7_1 = ( ((3p-1)**(8/5)) / ((3p+2)**(8/5)) )
 var_7_2 = (1+z)**(-13/10)
 var_7_3 = (epsilon_e_bar**(-8/5))
 var_7_4 = (epsilon_B**(-2/5))
 var_7_5 = (n_0**(3/10))
 var_7_6 = (E_52**(-1/10))
-var_7_7 = (t_day**(3/10))
+var_7_7 = (t_days**(3/10))
 
 nu_7 = 1.12 * var_7_1 * (10**8) * var_7_2 * var_7_3 * var_7_4 * var_7_5 * var_7_6 * var_7_7
-# b = 7, for k = 0
 # beta_1 = 2
 # beta_2 = 11/8
 # nu_b = nu_ac
 
-nu_9 = 
+
 # b = 9, for k = 0
 
-nu_10 = 
+#dummy variables to shorten nu_10
+var_9_1 = (p - 0.74)
+var_9_2 = (1 + z)**(1/2)
+var_9_3 = epsilon_e_bar**2
+var_9_4 = epsilon_B**(1/2)
+var_9_5 = E_52**(1/2)
+var_9_6 = t_days**(-3/2)
+
+nu_9 = 3.94 * var_9_1 * 10**15 * var_9_2 * var_9_3 * var_9_4 * var_9_5 * var_9_6
+# beta_1 = -1/2
+# beta_2 = -p/2
+# nu_b = nu_m
+
+
 # b = 10, for k = 0
+
+#dummy variables to shorten nu_10
+var_10_1 = (1+z)**(-1/2)
+var_10_2 = epsilon_B**(-3/2)
+var_10_3 = n_0**(-1)
+var_10_4 = E_52**(-1/2)
+var_10_5 = t_days**(-1/2)
+
+nu_10 = 1.32 * 10**10 * var_10_1 * var_10_2 * var_10_3 * var_10_4 * var_10_5 * 
+# beta_1 = 11/8
+# beta_2 = 1/3
+# nu_b = nu_sa
 
 
 #Niru's section
