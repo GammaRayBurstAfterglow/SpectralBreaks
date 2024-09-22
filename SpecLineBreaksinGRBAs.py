@@ -92,7 +92,7 @@ nu_2 = 3.71 * var_2_1 * var_2_2 * var_2_3 * var_2_4 * var_2_5 * var_2_6
 #nu_b = nu_c
 
 var_3_1 = (p - 0.46) * (10**13)
-var_3_2 = pow(e, -1.16*p) # is the e here the function e or something else
+var_3_2 = pow(e, -1.16p) # is the e here the function e or something else
 # if it is exponential function: math.exp(-1.16*p)
 var_3_3 = pow((1 + z), -1/2)
 var_3_4 = pow(epsilon_B, -3/2)
@@ -108,7 +108,7 @@ nu_3 = 6.37 * var_3_1 * var_3_2 * var_3_3 * var_3_4 * var_3_5 * var_3_6 * var_3_
 # b = 7, for k = 0
 
 #dummy variables to shorten nu_7
-var_7_1 = ( ((3*p-1)**(8/5)) / ((3*p+2)**(8/5)) )
+var_7_1 = ( ((3p-1)**(8/5)) / ((3p+2)**(8/5)) )
 var_7_2 = (1+z)**(-13/10)
 var_7_3 = (epsilon_e_bar**(-8/5))
 var_7_4 = (epsilon_B**(-2/5))
@@ -122,90 +122,6 @@ nu_7 = 1.12 * var_7_1 * (10**8) * var_7_2 * var_7_3 * var_7_4 * var_7_5 * var_7_
 # nu_b = nu_ac
 
 
-# b = 9, for k = 0
-
-#dummy variables to shorten nu_10
-var_9_1 = (p - 0.74)
-var_9_2 = (1 + z)**(1/2)
-var_9_3 = epsilon_e_bar**2
-var_9_4 = epsilon_B**(1/2)
-var_9_5 = E_52**(1/2)
-var_9_6 = t_days**(-3/2)
-
-nu_9 = 3.94 * var_9_1 * 10**15 * var_9_2 * var_9_3 * var_9_4 * var_9_5 * var_9_6
-# beta_1 = -1/2
-# beta_2 = -p/2
-# nu_b = nu_m
-
-
-# b = 10, for k = 0
-
-#dummy variables to shorten nu_10
-var_10_1 = (1+z)**(-1/2)
-var_10_2 = epsilon_B**(-3/2)
-# b = 9, for k = 0
-
-#dummy variables to shorten nu_10
-var_9_1 = (p - 0.74)
-var_9_2 = (1 + z)**(1/2)
-var_9_3 = epsilon_e_bar**2
-var_9_4 = epsilon_B**(1/2)
-var_9_5 = E_52**(1/2)
-var_9_6 = t_days**(-3/2)
-
-nu_9 = 3.94 * var_9_1 * 10**15 * var_9_2 * var_9_3 * var_9_4 * var_9_5 * var_9_6
-# beta_1 = -1/2
-# beta_2 = -p/2
-# nu_b = nu_m
-
-
-# b = 10, for k = 0
-
-#dummy variables to shorten nu_10
-var_10_1 = (1+z)**(-1/2)
-var_10_2 = epsilon_B**(-3/2)
-# b = 9, for k = 0
-
-#dummy variables to shorten nu_10
-var_9_1 = (p - 0.74)
-var_9_2 = (1 + z)**(1/2)
-var_9_3 = epsilon_e_bar**2
-var_9_4 = epsilon_B**(1/2)
-var_9_5 = E_52**(1/2)
-var_9_6 = t_days**(-3/2)
-
-nu_9 = 3.94 * var_9_1 * 10**15 * var_9_2 * var_9_3 * var_9_4 * var_9_5 * var_9_6
-# beta_1 = -1/2
-# beta_2 = -p/2
-# nu_b = nu_m
-
-
-# b = 10, for k = 0
-
-#dummy variables to shorten nu_10
-var_10_1 = (1+z)**(-1/2)
-var_10_2 = epsilon_B**(-3/2)
-# b = 9, for k = 0
-
-#dummy variables to shorten nu_10
-var_9_1 = (p - 0.74)
-var_9_2 = (1 + z)**(1/2)
-var_9_3 = epsilon_e_bar**2
-var_9_4 = epsilon_B**(1/2)
-var_9_5 = E_52**(1/2)
-var_9_6 = t_days**(-3/2)
-
-nu_9 = 3.94 * var_9_1 * 10**15 * var_9_2 * var_9_3 * var_9_4 * var_9_5 * var_9_6
-# beta_1 = -1/2
-# beta_2 = -p/2
-# nu_b = nu_m
-
-
-# b = 10, for k = 0
-
-#dummy variables to shorten nu_10
-var_10_1 = (1+z)**(-1/2)
-var_10_2 = epsilon_B**(-3/2)
 # b = 9, for k = 0
 
 #dummy variables to shorten nu_10
