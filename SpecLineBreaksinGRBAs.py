@@ -92,7 +92,7 @@ nu_2 = 3.71 * var_2_1 * var_2_2 * var_2_3 * var_2_4 * var_2_5 * var_2_6
 #nu_b = nu_c
 
 var_3_1 = (p - 0.46) * (10**13)
-var_3_2 = pow(e, -1.16p) # is the e here the function e or something else
+var_3_2 = pow(e, -1.16*p) # is the e here the function e or something else
 # if it is exponential function: math.exp(-1.16*p)
 var_3_3 = pow((1 + z), -1/2)
 var_3_4 = pow(epsilon_B, -3/2)
@@ -105,10 +105,8 @@ nu_3 = 6.37 * var_3_1 * var_3_2 * var_3_3 * var_3_4 * var_3_5 * var_3_6 * var_3_
 
 #Damien's Section
 
-# b = 7, for k = 0
-
 #dummy variables to shorten nu_7
-var_7_1 = ( ((3p-1)**(8/5)) / ((3p+2)**(8/5)) )
+var_7_1 = ( ((3*p-1)**(8/5)) / ((3*p+2)**(8/5)) )
 var_7_2 = (1+z)**(-13/10)
 var_7_3 = (epsilon_e_bar**(-8/5))
 var_7_4 = (epsilon_B**(-2/5))
@@ -147,11 +145,10 @@ var_10_3 = n_0**(-1)
 var_10_4 = E_52**(-1/2)
 var_10_5 = t_days**(-1/2)
 
-nu_10 = 1.32 * 10**10 * var_10_1 * var_10_2 * var_10_3 * var_10_4 * var_10_5 * 
+nu_10 = 1.32 * 10**10 * var_10_1 * var_10_2 * var_10_3 * var_10_4 * var_10_5
 # beta_1 = 11/8
 # beta_2 = 1/3
 # nu_b = nu_sa
-
 
 #Niru's section
 nu_11 = 
@@ -165,7 +162,7 @@ nu_7_ext =
 
 #Lily's Section
 def F(nu_b_ext,nu,nu_b,s,beta_1,beta_2):
-    return nu_b_ext*(((nu/nu_b)**(-s*beta_1))+((nu/nu_b)**(-s*beta_2))**(-1/s))  #KP - Lily I think you are missing a parenthasis
+    return nu_b_ext*(((nu/nu_b)**(-s*beta_1))+((nu/nu_b)**(-s*beta_2))**(-1/s))
 # implementation of eqn 1
 # function = flux at desired frequency, with passed argument of nu_b_ext, nu_b, s, beta_1, beta_2
 
