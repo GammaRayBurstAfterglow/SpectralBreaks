@@ -92,8 +92,7 @@ nu_2 = 3.71 * var_2_1 * var_2_2 * var_2_3 * var_2_4 * var_2_5 * var_2_6
 #nu_b = nu_c
 
 var_3_1 = (p - 0.46) * (10**13)
-var_3_2 = pow(e, -1.16*p) # is the e here the function e or something else
-# if it is exponential function: math.exp(-1.16*p)
+var_3_2 = math.exp(-1.16*p)
 var_3_3 = pow((1 + z), -1/2)
 var_3_4 = pow(epsilon_B, -3/2)
 var_3_5 = pow(n_0, 1)
