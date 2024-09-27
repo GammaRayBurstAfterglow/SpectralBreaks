@@ -149,7 +149,9 @@ nu_10 = 1.32 * 10**10 * var_10_1 * var_10_2 * var_10_3 * var_10_4 * var_10_5
 # nu_b = nu_sa
 
 
-nu_11 = 5.86 * 10**12 * var_11_1 * var_11_2 * var_11_3 * var_11_4 * var_11_5
+#Niru's Section
+
+#nu_11: 
 # b = 11, for k = 0
 #beta_1 = 1/3
 #beta_2 = -1/2
@@ -161,8 +163,9 @@ var_11_3 = pow(n_0, -1)
 var_11_4 = pow(E_52, -1/2)
 var_11_5 = pow(t_days, -1/2)
 
+nu_11 = 5.86 * 10**12 * var_11_1 * var_11_2 * var_11_3 * var_11_4 * var_11_5
 
-nu_1_ext = 0.647 * var_1_ext_1 * var_1_ext_2 * var_1_ext_3 * var_1_ext_4 * var_1_ext_5 * var_1_ext_6 * var_1_ext_7 * var_1_ext_8
+#nu_1_ext: 
 # b = 1, ext for k = 0
 
 #dummy variables to shorten nu_1_ext
@@ -175,6 +178,7 @@ var_1_ext_6 = pow(E_52, 9/10)
 var_1_ext_7 = pow(t_days, 1/2)
 var_1_ext_8 = pow(d_L28, -2)
 
+nu_1_ext = 0.647 * var_1_ext_1 * var_1_ext_2 * var_1_ext_3 * var_1_ext_4 * var_1_ext_5 * var_1_ext_6 * var_1_ext_7 * var_1_ext_8
 
 #nu_7_ext: 
 # b = 7, ext for k = 0
