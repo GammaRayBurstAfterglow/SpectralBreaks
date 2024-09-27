@@ -176,9 +176,21 @@ var_1_ext_7 = pow(t_days, 1/2)
 var_1_ext_8 = pow(d_L28, -2)
 
 
-
-nu_7_ext = 
+#nu_7_ext: 
 # b = 7, ext for k = 0
+
+#dummy variables to shorten nu_7_ext
+var_7_ext_1 = ( (pow(3p-1, 11/5)) / (pow(3p+2, 11/5)) )
+var_7_ext_2 = pow(1+z, -1/10)
+var_7_ext_3 = pow(epsilon_e_bar, -4/5))
+var_7_ext_4= pow(epsilon_B, -4/5)
+var_7_ext_5 = pow(n_0, 1/10)
+var_7_ext_6 = pow(E_52, 3/10)
+var_7_ext_7 = pow(t_days, 11/10)
+var_7_ext_8 = pow(d_L28, -2)
+
+nu_7_ext = 5.27 * pow(10, -3) * var_7_ext_1 * var_7_ext_2 * var_7_ext_3 * var_7_ext_4 * var_7_ext_5 * var_7_ext_6 * var_7_ext_7 * var_7_ext_8
+
 
 #Lily's Section
 def F(nu_b_ext,nu,nu_b,s,beta_1,beta_2):
