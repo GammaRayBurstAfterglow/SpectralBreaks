@@ -43,21 +43,21 @@ d_L28 =
 
 # Function for defining the break frequencies
 def BreakCase(b,k):
-match(b,k):
+	match(b,k):
 		case(b = 1, k = 0):
 			beta_1 = 2
 			beta_2 = 1/3
 			b = 1
 			nu_b = nu_sa
 
-			var_1_1 = (pow((p - 1), 3/5)) / (pow((3*p + 2), 3/5))
-			var_1_2 = pow((1 + z), -1)
-			var_1_3 = pow(epsilon_e_bar, -1)
-			var_1_4 = pow(epsilon_B, 1/5)
-			var_1_5 = pow(n_0, 3/5)
-			var_1_6 = pow(E_52, 1/5)
+			var1 = (pow((p - 1), 3/5)) / (pow((3*p + 2), 3/5))
+			var2 = pow((1 + z), -1)
+			var3 = pow(epsilon_e_bar, -1)
+			var4 = pow(epsilon_B, 1/5)
+			var5 = pow(n_0, 3/5)
+			var6 = pow(E_52, 1/5)
 
-			nu_1 = 1.24 * var_1_1 * (10**9) * var_1_2 * var_1_3 * var_1_4 * var_1_5 * var_1_6
+			nu_1 = 1.24 * var1 * (10**9) * var2 * var3 * var4 * var5 * var6
 
 		case(b = 2, k = 0):
 			beta_1 = 1/3
