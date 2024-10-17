@@ -6,6 +6,9 @@ k = 0,2
 b = 1,2,3,7,9,10,11
 # possible values of b. Method of selection is not considered, could be input() if desired
 
+nu = 
+#frequency 
+
 p = 2.5
 # represents the spectral index of the electron distribution
 # number of electrons with energy E is proportional to E^(-p)
