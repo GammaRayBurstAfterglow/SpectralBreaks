@@ -188,6 +188,36 @@ def BreakCase(b,k):
 
 #nu_7_ext = 5.27 * pow(10, -3) * var_7_ext_1 * var_7_ext_2 * var_7_ext_3 * var_7_ext_4 * var_7_ext_5 * var_7_ext_6 * var_7_ext_7 * var_7_ext_8
 
+#KP- I tried to add all the functions needed in one case break. I don't know if it's right or not. I am going to add it below as a comment:
+'''
+		case(beta_1 = 2, beta_2 = 1/3, s = 1.64 nu_b = nu_sa, b = 1, k = 0):
+
+			#this case gives out the nu_b, F_tilde, F_ext, and F_nu for break 1 of k = 0
+
+			var1 = (pow((p - 1), 3/5)) / (pow((3*p + 2), 3/5))
+			var2 = pow((1 + z), -1)
+			var3 = pow(epsilon_e_bar, -1)
+			var4 = pow(epsilon_B, 1/5)
+			var5 = pow(n_0, 3/5)
+			var6 = pow(E_52, 1/5)
+
+			nu_sa = 1.24 * var1 * (10**9) * var2 * var3 * var4 * var5 * var6
+			F_tilde = (1 + pow((nu/nu_sa), s(beta_1 - beta_2)))**(-1/s)
+			
+			#KP - I tried and included the ext flux density equation in this break case
+			var_1_ext_1 = (pow((p - 1), 6/5)) / ((3*p - 1)*(pow((3*p + 2), 1/5)))
+			var_1_ext_2 = pow((1 + z), 1/2)
+			var_1_ext_3 = pow(epsilon_e_bar, -1)
+			var_1_ext_4 = pow(epsilon_B, 2/5)
+			var_1_ext_5 = pow(n_0, 7/10)
+			var_1_ext_6 = pow(E_52, 9/10)
+			var_1_ext_7 = pow(t_days, 1/2)
+			var_1_ext_8 = pow(d_L28, -2)
+
+			nu_1_ext = 0.647 * var_1_ext_1 * var_1_ext_2 * var_1_ext_3 * var_1_ext_4 * var_1_ext_5 * var_1_ext_6 * var_1_ext_7 * var_1_ext_8
+
+			F_nu = nu_1_ext * (pow((nu/nu_b), -s*beta_1) + pow((nu/nu_b), -s*beta_2))**(-1/s)
+'''
 
 # Corresponding flux densities
 
