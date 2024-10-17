@@ -202,7 +202,7 @@ def BreakCase(b,k):
 			var6 = pow(E_52, 1/5)
 
 			nu_sa = 1.24 * var1 * (10**9) * var2 * var3 * var4 * var5 * var6
-			F_tilde = (1 + pow((nu/nu_sa), s(beta_1 - beta_2)))**(-1/s)
+			F_tilde = (1 + pow((nu/nu_sa), s*(beta_1 - beta_2)))**(-1/s)
 			
 			#KP - I tried and included the ext flux density equation in this break case
 			var_1_ext_1 = (pow((p - 1), 6/5)) / ((3*p - 1)*(pow((3*p + 2), 1/5)))
