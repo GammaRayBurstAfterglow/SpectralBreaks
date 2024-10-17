@@ -190,6 +190,8 @@ def BreakCase(b,k):
 
 #KP- I tried to add all the functions needed in one case break. I don't know if it's right or not. I am going to add it below as a comment:
 '''
+def BreakCase(beta_1, beta_2, s, nu_b, b, k):
+	match(beta_1, beta_2, s, nu_b, b, k):
 		case(beta_1 = 2, beta_2 = 1/3, s = 1.64 nu_b = nu_sa, b = 1, k = 0):
 
 			#this case gives out the nu_b, F_tilde, F_ext, and F_nu for break 1 of k = 0
