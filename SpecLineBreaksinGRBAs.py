@@ -1,16 +1,10 @@
-###################################################
-#
-#
-#
-#
-#
-#
-###################################################
-
-
-
-
 import math
+
+###################################################
+#
+# Variable definitions and assigning constants
+#
+###################################################
 
 k = 0,2
 #for now, only worried about k=0, but useful for future expansion
@@ -57,17 +51,26 @@ d_L28 =
 # luminosity distance in units of 10^28 cm
 # ned wright cosmology calculator to convert z to d_L28
 
+###############################################################
+#
 # Corresponding flux densities
-
+#
+# F and F_tilde will be implemented directly into BreakCase():
+#
+##############################################################
+'''
 def F(nu_b_ext, nu, nu_b, s, beta_1, beta_2):
-    return nu_b_ext*(((nu/nu_b)**(-s*beta_1))+((nu/nu_b)**(-s*beta_2))**(-1/s))  
-    #KP - Lily I think you are missing a parenthasis
+    return nu_b_ext*(((nu/nu_b)**(-s*beta_1))+((nu/nu_b)**(-s*beta_2))**(-1/s)) 
 	# implementation of eqn 1
 	# function = flux at desired frequency, with passed argument of nu_b_ext, nu_b, s, beta_1, beta_2
 
 def F_tilde(nu, nu_b, s, beta_1, beta_2):
     return (1+(nu/nu_b)**(s*(beta_1-beta_2)))**(-1/s)
 	# implementation of eqn 4, with passed argument of nu_b, s, beta_1, beta_2
+'''
+
+
+# Needs to be rewritten to align the new BreakCase():
 
 def F5(nu,s,beta_1,beta_2):
     return F(nu_1_ext,nu,nu_1,s,beta_1,beta_2)*F_tilde(nu,nu_2,s,beta_1,beta_2)*F_tilde(nu,nu_3,s,beta_1,beta_2)
@@ -77,8 +80,14 @@ def F9(nu,s,beta_1,beta_2):
     return F(nu_7_ext,nu,nu_7,s,beta_1,beta_2)*F_tilde(nu,nu_10,s,beta_1,beta_2)*F_tilde(nu,nu_11,s,beta_1,beta_2)*F_tilde(nu,nu_9,s,beta_1,beta_2)
 	# implementation of eqn 9, with passed argument of nu, s, beta_1, beta_2
 
+##############################################################
+#
+#
+# Main function (Refer to line 328 of GS2002_test.f90)
+#
+# At the end of the fucntion, return F5, F9?
+##############################################################
 
-# Function for defining the break frequencies
 
 #KP- I tried to add all the functions needed in one case break. I don't know if it's right or not. I am going to add it below as a comment:
 def BreakCase(beta_1, beta_2, s, nu_b, nu, b, k):
@@ -113,7 +122,7 @@ def BreakCase(beta_1, beta_2, s, nu_b, nu, b, k):
 			return F_tilde, F_nu
 
 
-
+# Previous BreakCase(): without flux density equations
 '''
 def BreakCase(b,k): 
 	match(b,k):
@@ -231,7 +240,7 @@ def BreakCase(b,k):
 
 
 
-# External flux density
+# External Flux density with incorrect (Should be a flux density instead of nu_b_ext)
 
 #nu_1_ext: 
 # b = 1, ext for k = 0
