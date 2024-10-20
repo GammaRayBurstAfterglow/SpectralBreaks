@@ -20,9 +20,10 @@ p = 2.5
 z = 1 
 # cosmological red shift
 
-nu =
+nu = range(10**(6), 2.418*(10**26))
 # range between 10 MHz and 1 TeV
 # convert energies into frequencies
+#KP - Converted TeV to Hz. Someone please check it just to make sure.
 
 epsilon_e = range(10**(-6), 0.4)
 # fraction of the total energy density in electrons
