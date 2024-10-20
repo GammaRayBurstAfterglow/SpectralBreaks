@@ -71,7 +71,6 @@ def F_tilde(nu, nu_b, s, beta_1, beta_2):
 
 
 # Needs to be rewritten to align the new BreakCase():
-
 def F5(nu,s,beta_1,beta_2):
     return F(nu_1_ext,nu,nu_1,s,beta_1,beta_2)*F_tilde(nu,nu_2,s,beta_1,beta_2)*F_tilde(nu,nu_3,s,beta_1,beta_2)
 	# implementation of eqn 5, with passed argument of nu, s, beta_1, beta_2
@@ -90,11 +89,11 @@ def F9(nu,s,beta_1,beta_2):
 
 
 #KP- I tried to add all the functions needed in one case break. I don't know if it's right or not. I am going to add it below as a comment:
-def BreakCase(beta_1, beta_2, s, nu_b, nu, b, k):
-	match(beta_1, beta_2, s, nu_b, nu, b, k):
-		case(beta_1 = 2, beta_2 = 1/3, s = 1.64 nu_b = nu_sa, b = 1, k = 0):
+def BreakCase(b, k, beta_1, beta_2, s, nu_b, nu):
+	match(b, k, beta_1, beta_2, s, nu_b, nu):
+		case(b = 1, k = 0, beta_1 = 2, beta_2 = 1/3, s = 1.64 nu_b = nu_sa):
 
-			#this case gives out the nu_b, F_tilde, F_ext, and F_nu for break 1 of k = 0
+		    #This is for break = 1 of k = 0
 
 			var1 = (pow((p - 1), 3/5)) / (pow((3*p + 2), 3/5))
 			var2 = pow((1 + z), -1)
@@ -104,9 +103,9 @@ def BreakCase(beta_1, beta_2, s, nu_b, nu, b, k):
 			var6 = pow(E_52, 1/5)
 
 			nu_sa = 1.24 * var1 * (10**9) * var2 * var3 * var4 * var5 * var6
-			F_tilde = (1 + pow((nu/nu_sa), s*(beta_1 - beta_2)))**(-1/s)
 			
-			#KP - I tried and included the ext flux density equation in this break case
+
+			#The chunk below solves for F_nu equation 1
 			var_1_ext_1 = (pow((p - 1), 6/5)) / ((3*p - 1)*(pow((3*p + 2), 1/5)))
 			var_1_ext_2 = pow((1 + z), 1/2)
 			var_1_ext_3 = pow(epsilon_e_bar, -1)
@@ -119,9 +118,51 @@ def BreakCase(beta_1, beta_2, s, nu_b, nu, b, k):
 			nu_1_ext = 0.647 * var_1_ext_1 * var_1_ext_2 * var_1_ext_3 * var_1_ext_4 * var_1_ext_5 * var_1_ext_6 * var_1_ext_7 * var_1_ext_8
 
 			F_nu = nu_1_ext * (pow((nu/nu_b), -s*beta_1) + pow((nu/nu_b), -s*beta_2))**(-1/s)
-			return F_tilde, F_nu
+
+			return F_nu
+
+		case(b = 2, k = 0, beta_1 = 1/3, beta_2 = ((1-p)/2), s = (1.84-(0.40*p)), nu_b = nu_m)
+
+                        #This is for break = 2 of k = 0
+		
+                        var1 = (p - 0.67) * (10**15)
+			var2 = pow((1 + z), 1/2)
+			var3 = pow(E_52, 1/2)
+			var4 = pow(epsilon_e_bar, 2)
+			var5 = pow(epsilon_B, 1/2)
+			var6 = pow(t_days, -3/2)
+
+			nu_2 = 3.73 * var1 * var2 * var3 * var4 * var5 * var6
+
+			F_tilde_2 = (1 + pow((nu/nu_sa), s*(beta_1 - beta_2)))**(-1/s)
+
+			return F_tilde_2
+
+		case(b = 3, k = 0, beta_1 = ((1-p)/2), beta_2 = (-p/2), s = (1.15-(0.06*p)), nu_b = nu_c)
+			#this is for break = 3 of k = 0
+                        var1 = (p - 0.46) * (10**13)
+			var2 = math.exp(-1.16*p)
+                        var3 = pow((1 + z), -1/2)
+			var4 = pow(epsilon_B, -3/2)
+			var5 = pow(n_0, -1)
+			var6 = pow(E_52, -1/2)
+			var7 = pow(t_days, -1/2)
+		              
+			nu_3 = 6.37 * var1 * var2 * var3 * var4 * var5 * var6 * var7
+
+			F_tilde_3 = (1 + pow((nu/nu_sa), s*(beta_1 - beta_2)))**(-1/s)
+
+			return F_tilde_3
+
+		case _:
+			print("Error: Invalid option for b, k")
+			break
+			#invalid option for b, k
 
 
+#KP - Tried to implement function 5 here
+def F1(F_nu, F_tilde_2, F_tilde_3):
+	return F_nu * F_tilde_2 * F_tilde_3
 # Previous BreakCase(): without flux density equations
 '''
 def BreakCase(b,k): 
