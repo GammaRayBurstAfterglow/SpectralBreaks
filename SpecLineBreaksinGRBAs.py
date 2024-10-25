@@ -122,9 +122,9 @@ def BreakCase(b, k, beta_1, beta_2, s, nu_b, nu):
 
 			nu_1_ext = 0.647 * var_1_ext_1 * var_1_ext_2 * var_1_ext_3 * var_1_ext_4 * var_1_ext_5 * var_1_ext_6 * var_1_ext_7 * var_1_ext_8
 
-			F_nu = nu_1_ext * (pow((nu/nu_b), -s*beta_1) + pow((nu/nu_b), -s*beta_2))**(-1/s)
+			F_nu_1 = nu_1_ext * (pow((nu/nu_b), -s*beta_1) + pow((nu/nu_b), -s*beta_2))**(-1/s)
 
-			return F_nu
+			return F_nu_1
 
 
 
