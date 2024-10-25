@@ -49,6 +49,7 @@ t_days = range(0.01, 100)
 # time since explosion in units of days in the observer frame(?)
 
 d_L28 = 
+# 6787.5 Mpc or 22.138 Gly
 # luminosity distance in units of 10^28 cm
 # ned wright cosmology calculator to convert z to d_L28
 
