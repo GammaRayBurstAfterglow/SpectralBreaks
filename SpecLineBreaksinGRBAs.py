@@ -48,8 +48,8 @@ A_star =
 t_days = range(0.01, 100)
 # time since explosion in units of days in the observer frame(?)
 
-d_L28 = 
-# 6787.5 Mpc or 22.138 Gly
+d_L28 = 2.095*(10**28)
+# 6787.5 Mpc - KP did the conversion some else can check it
 # luminosity distance in units of 10^28 cm
 # ned wright cosmology calculator to convert z to d_L28
 
