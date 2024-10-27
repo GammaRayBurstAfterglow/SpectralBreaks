@@ -6,13 +6,19 @@ import math
 #
 ###################################################
 
-k = 0,2
+# k = 0,2
 #for now, only worried about k=0, but useful for future expansion
 
-b = 1,2,3,7,9,10,11
+# b = 1,2,3,7,9,10,11
 # possible values of b. Method of selection is not considered, could be input() if desired
 
-p = 2.5
+# nu =
+#range(10**(6), 2.418*(10**26))
+# range between 10 MHz and 1 TeV
+# convert energies into frequencies
+#KP - Converted TeV to Hz. Someone please check it just to make sure.
+
+p = 2.23
 # represents the spectral index of the electron distribution
 # number of electrons with energy E is proportional to E^(-p)
 # range between 2 - 4, 2.5 preferred value.
@@ -20,38 +26,41 @@ p = 2.5
 z = 1 
 # cosmological red shift
 
-nu = range(10**(6), 2.418*(10**26))
-# range between 10 MHz and 1 TeV
-# convert energies into frequencies
-#KP - Converted TeV to Hz. Someone please check it just to make sure.
-
-epsilon_e = range(10**(-6), 0.4)
+epsilon_e = 0.1
+#range(10**(-6), 0.4)
 # fraction of the total energy density in electrons
 
 epsilon_e_bar = (epsilon_e*(p-2)) / (p-1)
 
-epsilon_B = range(10**(-9) 0.3)
+epsilon_B = 0.01
+#range(10**(-9) 0.3)
 # fraction total energy density in the magnetic field 
 
 epsilon_p = 1 - (epsilon_e + epsilon_B)
 
-n_0 = range(10**(-4), 10**(3))
+n_0 = 1
+#range(10**(-4), 10**(3))
 # ambient density in units of particles/cm^3
 # height of the density function for k = 0
 
-E_52 = range(10**(-4), 10*(2))
+E_52 = 1
+#range(10**(-4), 10*(2))
 # explosion energy of the GRB in units of 10^52 ergs
 
-A_star = 
+# A_star = 
 # height of the density function for k = 2
+# Only needed for k = 2, ignoring for now
 
-t_days = range(0.01, 100)
+t_days = # 3.083E+03 Convert from seconds to days
+#range(0.01, 100)
 # time since explosion in units of days in the observer frame(?)
 
-d_L28 = 2.095*(10**28)
-# 6787.5 Mpc - KP did the conversion some else can check it
+d_L28 =  2.095 # (10**28)cm
+# 6787.5 Mpc convert to 10^28
 # luminosity distance in units of 10^28 cm
 # ned wright cosmology calculator to convert z to d_L28
+# Implement directly at some point if z != 1
+# https://www.astro.ucla.edu/~wright/CosmoCalc.html
 
 ###############################################################
 #
@@ -83,16 +92,21 @@ def F9(nu,s,beta_1,beta_2):
 
 ##############################################################
 #
-#
 # Main function (Refer to line 328 of GS2002_test.f90)
 #
 # At the end of the fucntion, return F5, F9?
+#
 ##############################################################
 
 
-#KP- I tried to add all the functions needed in one case break. I don't know if it's right or not. I am going to add it below as a comment:
+for i in loop():
+
+
+
 def BreakCase(b, k, beta_1, beta_2, s, nu_b, nu):
 	match(b, k, beta_1, beta_2, s, nu_b, nu):
+	# Values for b, k, beta_1, beta_2, s, and nu_b are given by Granot and Sari
+
 
 
 		# Break 1 for k = 0
@@ -123,10 +137,9 @@ def BreakCase(b, k, beta_1, beta_2, s, nu_b, nu):
 
 			nu_1_ext = 0.647 * var_1_ext_1 * var_1_ext_2 * var_1_ext_3 * var_1_ext_4 * var_1_ext_5 * var_1_ext_6 * var_1_ext_7 * var_1_ext_8
 
-			F_nu_1 = nu_1_ext * (pow((nu/nu_b), -s*beta_1) + pow((nu/nu_b), -s*beta_2))**(-1/s)
+			F_nu = nu_1_ext * (pow((nu/nu_b), -s*beta_1) + pow((nu/nu_b), -s*beta_2))**(-1/s)
 
-			return F_nu_1
-
+			return F_nu, beta_1, beta_2 
 
 
 
@@ -146,7 +159,6 @@ def BreakCase(b, k, beta_1, beta_2, s, nu_b, nu):
 			F_tilde_2 = (1 + pow((nu/nu_sa), s*(beta_1 - beta_2)))**(-1/s)
 
 			return F_tilde_2
-
 
 
 
@@ -189,7 +201,6 @@ def BreakCase(b, k, beta_1, beta_2, s, nu_b, nu):
 
 
 
-
 		# DK - Still missing s, need to refer to Granot and Sari for this
 		# Break 9 for k = 0
 		case(b = 9, k = 0, beta_1 = -1/2, beta_2 = -p/2, s = , nu_b = nu_m):
@@ -204,7 +215,6 @@ def BreakCase(b, k, beta_1, beta_2, s, nu_b, nu):
 
 			# Function given by nu_b of Granot and Sari
 			nu_9 = 3.94 * var1 * 10**15 * var2 * var3 * var4 * var5 * var6
-
 
 
 
@@ -224,7 +234,6 @@ def BreakCase(b, k, beta_1, beta_2, s, nu_b, nu):
 
 
 
-
 		# DK - Still missing s, and nu_b, need to refer to Granot and Sari for these later
 		# Break 11 for k = 0
 		case(b = 11, k = 0, beta_1 = 1/3, beta_2 = -1/2, s = , nu_b =):
@@ -238,8 +247,6 @@ def BreakCase(b, k, beta_1, beta_2, s, nu_b, nu):
 
 			# Function given by nu_b of Granot and Sari
 			nu_11 = 5.86 * 10**12 * var1 * var2 * var3 * var4 * var_11_5
-
-
 
 
 
