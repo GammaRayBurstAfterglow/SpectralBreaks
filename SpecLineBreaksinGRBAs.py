@@ -51,7 +51,9 @@ E_52 = 1
 # height of the density function for k = 2
 # Only needed for k = 2, ignoring for now
 
-t_days = # 3.083E+03 Convert from seconds to days
+t_days = [1.157*(10**-4), 5.64*(10**-2), 5.585*(10**-1), 3.495, 13.831] 
+#Convereted from seconds to days
+# 3.083E+03 Convert from seconds to days
 #range(0.01, 100)
 # time since explosion in units of days in the observer frame(?)
 
