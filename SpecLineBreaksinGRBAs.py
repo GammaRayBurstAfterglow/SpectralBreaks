@@ -1,4 +1,5 @@
 import math
+/
 
 ###################################################
 #
@@ -51,10 +52,16 @@ E_52 = 1
 # height of the density function for k = 2
 # Only needed for k = 2, ignoring for now
 
-t_days = [1.157*(10**-4), 5.64*(10**-2), 5.585*(10**-1), 3.495, 13.831] 
-#Convereted from seconds to days
-# 3.083E+03 Convert from seconds to days
-#range(0.01, 100)
+t_days = [
+1.157*(10**(-4)),
+5.64*(10**(-2)),
+5.585*(10**(-1)),
+3.495,
+13.831
+]
+
+# Convert from seconds to days [1.000E+01, 4.875E+03, 4.826E+04, 3.020E+05, 1.195E+06]
+# From the output of GS2002_test.f90 in fort.810, we selected 5 iterations to compare against, 0, 27, 37, 45, and 51
 # time since explosion in units of days in the observer frame(?)
 
 d_L28 =  2.095 # (10**28)cm
@@ -64,33 +71,6 @@ d_L28 =  2.095 # (10**28)cm
 # Implement directly at some point if z != 1
 # https://www.astro.ucla.edu/~wright/CosmoCalc.html
 
-###############################################################
-#
-# Corresponding flux densities
-#
-# F and F_tilde will be implemented directly into BreakCase():
-#
-##############################################################
-'''
-def F(nu_b_ext, nu, nu_b, s, beta_1, beta_2):
-	return nu_b_ext*(((nu/nu_b)**(-s*beta_1))+((nu/nu_b)**(-s*beta_2))**(-1/s)) 
-	# implementation of eqn 1
-	# function = flux at desired frequency, with passed argument of nu_b_ext, nu_b, s, beta_1, beta_2
-
-def F_tilde(nu, nu_b, s, beta_1, beta_2):
-	return (1+(nu/nu_b)**(s*(beta_1-beta_2)))**(-1/s)
-	# implementation of eqn 4, with passed argument of nu_b, s, beta_1, beta_2
-'''
-
-
-# Needs to be rewritten to align the new BreakCase():
-def F5(nu,s,beta_1,beta_2):
-	return F(nu_1_ext,nu,nu_1,s,beta_1,beta_2)*F_tilde(nu,nu_2,s,beta_1,beta_2)*F_tilde(nu,nu_3,s,beta_1,beta_2)
-	# implementation of eqn 5, with passed argument of nu, s, beta_1, beta_2
-
-def F9(nu,s,beta_1,beta_2):
-	return F(nu_7_ext,nu,nu_7,s,beta_1,beta_2)*F_tilde(nu,nu_10,s,beta_1,beta_2)*F_tilde(nu,nu_11,s,beta_1,beta_2)*F_tilde(nu,nu_9,s,beta_1,beta_2)
-	# implementation of eqn 9, with passed argument of nu, s, beta_1, beta_2
 
 ##############################################################
 #
@@ -101,10 +81,6 @@ def F9(nu,s,beta_1,beta_2):
 ##############################################################
 
 
-for i in loop():
-
-
-
 def BreakCase(b, k, beta_1, beta_2, s, nu_b, nu):
 	match(b, k, beta_1, beta_2, s, nu_b, nu):
 	# Values for b, k, beta_1, beta_2, s, and nu_b are given by Granot and Sari
@@ -112,7 +88,10 @@ def BreakCase(b, k, beta_1, beta_2, s, nu_b, nu):
 
 
 		# Break 1 for k = 0
-		case(b = 1, k = 0, beta_1 = 2, beta_2 = 1/3, s = 1.64 nu_b = nu_sa):
+		case(1, 0, 2, Fraction(1, 3), 1.64):
+			# b = 1, k = 0, beta_1 = 2, beta_2 = 1/3, s = 1.64
+			# nu_b = nu_sa
+
 
 			# Dummy variables for calculating nu_b | nu_b = nu_
 			# Dummy variation notation will follow as such for all break cases:
@@ -124,7 +103,7 @@ def BreakCase(b, k, beta_1, beta_2, s, nu_b, nu):
 			var5 = pow(n_0, 3/5)
 			var6 = pow(E_52, 1/5)
 
-			nu_sa = 1.24 * var1 * (10**9) * var2 * var3 * var4 * var5 * var6
+			nu_1 = 1.24 * var1 * (10**9) * var2 * var3 * var4 * var5 * var6
 			
 
 			# The chunk below solves for F_nu equation 1
@@ -139,14 +118,16 @@ def BreakCase(b, k, beta_1, beta_2, s, nu_b, nu):
 
 			nu_1_ext = 0.647 * var_1_ext_1 * var_1_ext_2 * var_1_ext_3 * var_1_ext_4 * var_1_ext_5 * var_1_ext_6 * var_1_ext_7 * var_1_ext_8
 
-			F_nu_1 = nu_1_ext * (pow((nu/nu_b), -s*beta_1) + pow((nu/nu_b), -s*beta_2))**(-1/s)
+			F_nu_1 = nu_1_ext * (pow((nu/nu_1), -s*beta_1) + pow((nu/nu_1), -s*beta_2))**(-1/s)
 
-			return F_nu_1 
+			return F_nu_1
 
 
 
 		# Break 2 for k = 0
-		case(b = 2, k = 0, beta_1 = 1/3, beta_2 = ((1-p)/2), s = (1.84-(0.40*p)), nu_b = nu_m):
+		case(2, 0, Fraction(1, 3), Fraction((1-p), 2), (1.84-(0.40*p))):
+			# b = 2, k = 0, beta_1 = 1/3, beta_2 = ((1-p)/2), s = (1.84-(0.40*p))
+			# nu_b = nu_m
 			
 			# Dummy variables for calculating nu_2
 			var1 = (p - 0.67) * (10**15)
@@ -158,14 +139,16 @@ def BreakCase(b, k, beta_1, beta_2, s, nu_b, nu):
 
 			nu_2 = 3.73 * var1 * var2 * var3 * var4 * var5 * var6
 
-			F_tilde_2 = (1 + pow((nu/nu_sa), s*(beta_1 - beta_2)))**(-1/s)
+			F_tilde_2 = (1 + pow((nu/nu_2), s*(beta_1 - beta_2)))**(-1/s)
 
 			return F_tilde_2
 
 
 
 		# Break 3 for k = 0
-		case(b = 3, k = 0, beta_1 = ((1-p)/2), beta_2 = (-p/2), s = (1.15-(0.06*p)), nu_b = nu_c):
+		case(3, 0, ((1-p)/2), (-p/2), (1.15-(0.06*p))):
+			# b = 3, k = 0, beta_1 = ((1-p)/2), beta_2 = (-p/2), s = (1.15-(0.06*p))
+			# nu_b = nu_c
 
 			# Dummy variables for calculating nu_3
 			var1 = (p - 0.46) * (10**13)
@@ -178,18 +161,19 @@ def BreakCase(b, k, beta_1, beta_2, s, nu_b, nu):
 					  
 			nu_3 = 6.37 * var1 * var2 * var3 * var4 * var5 * var6 * var7
 
-			F_tilde_3 = (1 + pow((nu/nu_sa), s*(beta_1 - beta_2)))**(-1/s)
+			F_tilde_3 = (1 + pow((nu/nu_3), s*(beta_1 - beta_2)))**(-1/s)
 
 			return F_tilde_3
 
 
 
-		# DK - Still missing s, and nu_b, need to refer to Granot and Sari for these later
 		# Break 7 for k = 0
-		case(b = 7, k = 0, beta_1 = 2, beta_2 = 11/8, s = , nu_b = ):
+		case(7, 0, 2, 11/8, (1.99 - 0.04*p)):
+			# b = 7, k = 0, beta_1 = 2, beta_2 = 11/8, s = (1.99 - 0.04*p)
+			# nu_b = nu_ac
 
-			#dummy variables for calculating nu_7
-			var1 = ( ((3p-1)**(8/5)) / ((3p+2)**(8/5)) )
+			# dummy variables for calculating nu_7
+			var1 = ( ((3*p-1)**(8/5)) / ((3*p+2)**(8/5)) )
 			var2 = (1+z)**(-13/10)
 			var3 = (epsilon_e_bar**(-8/5))
 			var4 = (epsilon_B**(-2/5))
@@ -202,12 +186,32 @@ def BreakCase(b, k, beta_1, beta_2, s, nu_b, nu):
 			nu_7 = 1.12 * var1 * (10**8) * var2 * var3 * var4 * var5 * var6 * var7
 
 
+			#nu_7_ext: 
 
-		# DK - Still missing s, need to refer to Granot and Sari for this
+			#dummy variables to shorten nu_7_ext
+			var_7_ext_1 = ((pow(3*p-1, 11/5)) / (pow(3*p+2, 11/5)))
+			var_7_ext_2 = pow(1+z, -1/10)
+			var_7_ext_3 = pow(epsilon_e_bar, -4/5)
+			var_7_ext_4 = pow(epsilon_B, -4/5)
+			var_7_ext_5 = pow(n_0, 1/10)
+			var_7_ext_6 = pow(E_52, 3/10)
+			var_7_ext_7 = pow(t_days, 11/10)
+			var_7_ext_8 = pow(d_L28, -2)
+
+			nu_7_ext = 5.27 * pow(10, -3) * var_7_ext_1 * var_7_ext_2 * var_7_ext_3 * var_7_ext_4 * var_7_ext_5 * var_7_ext_6 * var_7_ext_7 * var_7_ext_8
+
+			F_nu_7 = nu_7_ext( (nu/nu_7)**(-s * beta_1) + (nu/nu_7)**(-s * beta_2) )**(-1/s)
+
+			return F_nu_7
+
+
+
 		# Break 9 for k = 0
-		case(b = 9, k = 0, beta_1 = -1/2, beta_2 = -p/2, s = , nu_b = nu_m):
+		case(9, 0, -1/2, -p/2, (3.34 - 0.82 * p)):
+			# b = 9, k = 0, beta_1 = -1/2, beta_2 = -p/2, s = (3.34 - 0.82 * p)
+			# nu_b = nu_m
 
-			#dummy variables calculating nu_9
+			# dummy variables calculating nu_9
 			var1 = (p - 0.74)
 			var2 = (1 + z)**(1/2)
 			var3 = epsilon_e_bar**2
@@ -218,11 +222,15 @@ def BreakCase(b, k, beta_1, beta_2, s, nu_b, nu):
 			# Function given by nu_b of Granot and Sari
 			nu_9 = 3.94 * var1 * 10**15 * var2 * var3 * var4 * var5 * var6
 
+			F_tilde_9 = ( 1 + (nu/nu_9)**(s * (beta_1 - beta_2) ) )**(-1/s)
+
+			return F_tilde_9
 
 
-		# DK - Still missing s, need to refer to Granot and Sari for this
 		# Break 10 for k = 0
-		case(b = 10, k = 0, beta_1 = 11/8, beta_2 = 1/3, s = , nu_b = nu_sa):
+		case(10, 0, 11/8, 1/3, 1.213):
+			# b = 10, k = 0, beta_1 = 11/8, beta_2 = 1/3, s = (1.213)
+			#nu_b = nu_sa
 
 			# Dummy variables to calculate nu_10
 			var1 = (1+z)**(-1/2)
@@ -235,10 +243,14 @@ def BreakCase(b, k, beta_1, beta_2, s, nu_b, nu):
 			nu_10 = 1.32 * 10**10 * var1 * var2 * var3 * var4 * var5 
 
 
+			F_tilde_10= ( 1 + (nu/nu_10)**(s * (beta_1 - beta_2) ) )**(-1/s)
 
-		# DK - Still missing s, and nu_b, need to refer to Granot and Sari for these later
+			return F_tilde_9
+
+
 		# Break 11 for k = 0
-		case(b = 11, k = 0, beta_1 = 1/3, beta_2 = -1/2, s = , nu_b =):
+		case(11, 0, 1/3, -1/2, 0.597):
+			# nu_b = nu_c
 
 			#dummy variables to shorten nu_11
 			var1 = pow((1+z), -1/2)
@@ -250,6 +262,9 @@ def BreakCase(b, k, beta_1, beta_2, s, nu_b, nu):
 			# Function given by nu_b of Granot and Sari
 			nu_11 = 5.86 * 10**12 * var1 * var2 * var3 * var4 * var_11_5
 
+			F_tilde_11 = ( 1 + (nu/nu_11)**(s * (beta_1 - beta_2) ) )**(-1/s)
+
+			return F_tilde_9
 
 
 		# Else case, I.E. invalid option for b, k, breaks code and outputs error message
@@ -258,40 +273,37 @@ def BreakCase(b, k, beta_1, beta_2, s, nu_b, nu):
 			break
 
 
-#KP - Tried to implement equation 5 here
-def F1(F_nu, F_tilde_2, F_tilde_3):
-	return F_nu * F_tilde_2 * F_tilde_3
+
+##############################################################
+#
+# Corresponding flux densities
+#
+# F and F_tilde will be implemented directly into BreakCase():
+#
+##############################################################
+
+def F5(F_nu_1, F_tilde_2, F_tilde_3):
+	# Equation 5 from Granot and Sari
+	# Concerned only with breaks, 1, 2, and 3
+
+	F5 = F_nu_1 * F_tilde_2 * F_tilde_3
+	return F5
+	# Needs to output somewhere, preferably to a file
+
+def F9(F_nu_7, F_tilde_9, F_tilde_10, F_tilde_11)
+	# Equation 9 from Granot and Sari
+	# Concerned only with breaks, 7, 9, 10, and 11
+	
+	F9 = F_nu_7 * F_tilde_9 * F_tilde_10 * F_tilde_11
+	return F9	
+	# Needs to output somewhere, preferably to a file
 
 
 
-# External Flux density with incorrect (Should be a flux density instead of nu_b_ext)
 
-#nu_1_ext: 
-# b = 1, ext for k = 0
 
-#dummy variables to shorten nu_1_ext
-#var_1_ext_1 = (pow((p - 1), 6/5)) / ((3*p - 1)*(pow((3*p + 2), 1/5)))
-#var_1_ext_2 = pow((1 + z), 1/2)
-#var_1_ext_3 = pow(epsilon_e_bar, -1)
-#var_1_ext_4 = pow(epsilon_B, 2/5)
-#var_1_ext_5 = pow(n_0, 7/10)
-#var_1_ext_6 = pow(E_52, 9/10)
-#var_1_ext_7 = pow(t_days, 1/2)
-#var_1_ext_8 = pow(d_L28, -2)
-
-#nu_1_ext = 0.647 * var_1_ext_1 * var_1_ext_2 * var_1_ext_3 * var_1_ext_4 * var_1_ext_5 * var_1_ext_6 * var_1_ext_7 * var_1_ext_8
-
-#nu_7_ext: 
-# b = 7, ext for k = 0
-
-#dummy variables to shorten nu_7_ext
-#var_7_ext_1 = ( (pow(3p-1, 11/5)) / (pow(3p+2, 11/5)) )
-#var_7_ext_2 = pow(1+z, -1/10)
-#var_7_ext_3 = pow(epsilon_e_bar, -4/5))
-#var_7_ext_4= pow(epsilon_B, -4/5)
-#var_7_ext_5 = pow(n_0, 1/10)
-#var_7_ext_6 = pow(E_52, 3/10)
-#var_7_ext_7 = pow(t_days, 11/10)
-#var_7_ext_8 = pow(d_L28, -2)
-
-#nu_7_ext = 5.27 * pow(10, -3) * var_7_ext_1 * var_7_ext_2 * var_7_ext_3 * var_7_ext_4 * var_7_ext_5 * var_7_ext_6 * var_7_ext_7 * var_7_ext_8
+if __name__ == '__main__':
+	print("test")
+	Breakcase()
+	#F5()
+	#F9()
