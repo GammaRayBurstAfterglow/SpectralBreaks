@@ -9,7 +9,9 @@ import math
 # k = 0,2
 #for now, only worried about k=0, but useful for future expansion
 
-# b = 1,2,3,7,9,10,11
+b_values = [
+1,2,3,7,9,10,11
+]
 # possible values of b. Method of selection is not considered, could be input() if desired
 
 nu = 10**6
@@ -51,15 +53,13 @@ E_52 = 1
 # height of the density function for k = 2
 # Only needed for k = 2, ignoring for now
 
-t_days = (1.157*(10**(-4)))
-
-# Other values of t_days that need to be checked. Run through a loop. Not doing now for debugging reasons
-'''
+t_days = [
+1.157*(10**(-4)),
 5.64*(10**(-2)),
 5.585*(10**(-1)),
 3.495,
 13.831
-'''
+]
 
 # Convert from seconds to days [1.000E+01, 4.875E+03, 4.826E+04, 3.020E+05, 1.195E+06]
 # From the output of GS2002_test.f90 in fort.810, we selected 5 iterations to compare against, 0, 27, 37, 45, and 51
@@ -126,7 +126,7 @@ def BreakCase(b):
 
 			F_nu_1 = nu_1_ext * (pow((nu/nu_1), -s*beta_1) + pow((nu/nu_1), -s*beta_2))**(-1/s)
 
-			print(F_nu_1)
+			print(f'F_nu_1: {F_nu_1}')
 			return F_nu_1
 
 
@@ -154,7 +154,7 @@ def BreakCase(b):
 
 			F_tilde_2 = (1 + pow((nu/nu_2), s*(beta_1 - beta_2)))**(-1/s)
 
-			print(F_tilde_2)
+			print(f'F_tilde_2: {F_tilde_2}')
 			return F_tilde_2
 
 
@@ -183,7 +183,7 @@ def BreakCase(b):
 
 			F_tilde_3 = (1 + pow((nu/nu_3), s*(beta_1 - beta_2)))**(-1/s)
 
-			print(F_tilde_3)
+			print(f'F_tilde_3: {F_tilde_3}')
 			return F_tilde_3
 
 
@@ -206,7 +206,7 @@ def BreakCase(b):
 			var4 = (epsilon_B**(-2/5))
 			var5 = (n_0**(3/10))
 			var6 = (E_52**(-1/10))
-			var7 = (t_day**(3/10))
+			var7 = (t_days**(3/10))
 
 
 			# Function given by nu_b of Granot and Sari
@@ -227,8 +227,9 @@ def BreakCase(b):
 
 			nu_7_ext = 5.27 * pow(10, -3) * var_7_ext_1 * var_7_ext_2 * var_7_ext_3 * var_7_ext_4 * var_7_ext_5 * var_7_ext_6 * var_7_ext_7 * var_7_ext_8
 
-			F_nu_7 = nu_7_ext( (nu/nu_7)**(-s * beta_1) + (nu/nu_7)**(-s * beta_2) )**(-1/s)
+			F_nu_7 = nu_7_ext*( (nu/nu_7)**(-s * beta_1) + (nu/nu_7)**(-s * beta_2) )**(-1/s)
 
+			print(f'F_nu_7: {F_nu_7}')
 			return F_nu_7
 
 
@@ -257,6 +258,7 @@ def BreakCase(b):
 
 			F_tilde_9 = ( 1 + (nu/nu_9)**(s * (beta_1 - beta_2) ) )**(-1/s)
 
+			print(f'F_tilde_9: {F_tilde_9}')
 			return F_tilde_9
 
 
@@ -285,7 +287,8 @@ def BreakCase(b):
 
 			F_tilde_10= ( 1 + (nu/nu_10)**(s * (beta_1 - beta_2) ) )**(-1/s)
 
-			return F_tilde_9
+			print(f'F_tilde_10: {F_tilde_10}')
+			return F_tilde_10
 
 
 		# Break 11 for k = 0
@@ -308,11 +311,12 @@ def BreakCase(b):
 			var5 = pow(t_days, -1/2)
 
 			# Function given by nu_b of Granot and Sari
-			nu_11 = 5.86 * 10**12 * var1 * var2 * var3 * var4 * var_11_5
+			nu_11 = 5.86 * 10**12 * var1 * var2 * var3 * var4
 
 			F_tilde_11 = ( 1 + (nu/nu_11)**(s * (beta_1 - beta_2) ) )**(-1/s)
 
-			return F_tilde_9
+			print(f'F_tilde_11: {F_tilde_11}')
+			return(F_tilde_11)
 
 
 		# Else case, I.E. invalid option for b, k, breaks code and outputs error message
@@ -350,7 +354,12 @@ def F9(F_nu_7, F_tilde_9, F_tilde_10, F_tilde_11):
 
 
 
+
 if __name__ == '__main__':
-	BreakCase(b=3)
+	#for i in t_days:
+	#	print(f'\n t: {i}')
+
+	for i in b_values:
+		BreakCase(b = i)
 	#F5(F_nu_1, F_tilde_2, F_tilde_3)
 	#F9(F_nu_7, F_tilde_9, F_tilde_10, F_tilde_11)
