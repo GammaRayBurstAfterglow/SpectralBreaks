@@ -2,7 +2,7 @@ import math
 
 ###################################################
 #
-# Variable definitions and assigning constants
+# Variable definitions and constant assignment
 #
 ###################################################
 
@@ -53,7 +53,7 @@ E_52 = 1
 # height of the density function for k = 2
 # Only needed for k = 2, ignoring for now
 
-t_days = [
+t_days_values = [
 1.157*(10**(-4)),
 5.64*(10**(-2)),
 5.585*(10**(-1)),
@@ -73,17 +73,17 @@ d_L28 =  2.095 # (10**28)cm
 # https://www.astro.ucla.edu/~wright/CosmoCalc.html
 
 
+
 ##############################################################
 #
-# Main function (Refer to line 328 of GS2002_test.f90)
-#
-# At the end of the fucntion, return F5, F9?
-#
+# BreakCase(): (Refer to line 328 of GS2002_test.f90)
+# 
+# This is the main file for the program. 
+# BreakCase(): outputs equations 5 and 9 from Granot and Sari.
 ##############################################################
 
 
-
-def BreakCase(b):
+def BreakCase(b, t_days):
 	match(b):
 	# Values for b, k, beta_1, beta_2, s, and nu_b are given by Granot and Sari
 
@@ -329,11 +329,16 @@ def BreakCase(b):
 
 ##############################################################
 #
-# Corresponding flux densities
+# Corresponding flux density functions
 #
-# F and F_tilde will be implemented directly into BreakCase():
+# F and F_tilde are implemented directly into BreakCase():
 #
 ##############################################################
+
+
+# Needs to be implemented in __main__
+#F5(F_nu_1, F_tilde_2, F_tilde_3)
+#F9(F_nu_7, F_tilde_9, F_tilde_10, F_tilde_11)
 
 def F5(F_nu_1, F_tilde_2, F_tilde_3):
 	# Equation 5 from Granot and Sari
@@ -352,14 +357,26 @@ def F9(F_nu_7, F_tilde_9, F_tilde_10, F_tilde_11):
 	# Needs to output somewhere, preferably to a file
 
 
+##############################################################
+#
+# MAIN
+#
+##############################################################
 
 
 
+# runs code on startup
 if __name__ == '__main__':
-	#for i in t_days:
-	#	print(f'\n t: {i}')
 
-	for i in b_values:
-		BreakCase(b = i)
-	#F5(F_nu_1, F_tilde_2, F_tilde_3)
-	#F9(F_nu_7, F_tilde_9, F_tilde_10, F_tilde_11)
+	# iterates through the five values for t_days to compare against GS2002.f90 
+	for i in t_days_values:
+
+		#Outputs the different t_days values
+		print(f'\n t: {i}')
+
+		# With each value of t_days, iterates through the different breaks in BreakCase
+		for j in b_values:
+			BreakCase(b=j, t_days=i)
+
+
+
