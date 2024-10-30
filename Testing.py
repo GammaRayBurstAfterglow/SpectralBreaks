@@ -392,12 +392,24 @@ def F9(F_nu_7, F_tilde_9, F_tilde_10, F_tilde_11):
 # runs code on startup
 if __name__ == '__main__':
 
-	# iterates through the five values for t_days to compare against GS2002.f90 
-	for i in t_days_values:
+    # Iterate through the five values for t_days to compare against GS2002.f90 
+    for t_days in t_days_values:
+        print(f'\n t: {t_days}')
+        
+        # Dictionary to store BreakCase outputs by break number
+        results = {}
 
-		#Outputs the different t_days values
-		print(f'\n t: {i}')
+        # Iterate through the different breaks in BreakCase
+        for b in b_values:
+            results[b] = BreakCase(b=b, t_days=t_days, nu=nu)
+        
+        # Calculate F5 if required breaks (1, 2, 3) are present
+        if all(b in results for b in [1, 2, 3]):
+            F5_value = F5(results[1], results[2], results[3])
+            print(f'F5 result for t_days={t_days}: {F5_value}')
 
-		# With each value of t_days, iterates through the different breaks in BreakCase
-		for j in b_values:
-			BreakCase(b=j, t_days=i, nu=nu)
+        # Calculate F9 if required breaks (7, 9, 10, 11) are present
+        if all(b in results for b in [7, 9, 10, 11]):
+            F9_value = F9(results[7], results[9], results[10], results[11])
+            print(f'F9 result for t_days={t_days}: {F9_value}')
+
