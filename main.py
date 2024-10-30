@@ -1,23 +1,30 @@
 import math
-
+import numpy as np
 
 ###################################################
 #
-# Variable definitions and assigning constants
+# Variable definitions and constant assignment
 #
 ###################################################
 
 # k = 0,2
-#for now, only worried about k=0, but useful for future expansion
+# for now, only worried about k=0, but useful for future expansion
+# For future iterations of the program, we will have a seperate match case system for k=2
 
-# b = 1,2,3,7,9,10,11
-# possible values of b. Method of selection is not considered, could be input() if desired
+b_values = [
+1,2,3,7,9,10,11
+]
+# Spectral breaks needed to fulfil equations 5 and 9 from Granot and Sari
+# Spectral breaks 1, 2, and 3 are needed for equation 5
+# Spectral breaks 7, 9, 10, and 11 are needed for equation 9
 
-# nu =
-#range(10**(6), 2.418*(10**26))
-# range between 10 MHz and 1 TeV
+
+nu = np.logspace(6, np.log10(2.418 * 10**26), 100)
+# 100 values spaced evenly on a logarithmic scale from the range below
+# range(10**(6), 2.418*(10**26))
 # convert energies into frequencies
-#KP - Converted TeV to Hz. Someone please check it just to make sure.
+# KP - Converted TeV to Hz. Someone please check it just to make sure.
+
 
 p = 2.23
 # represents the spectral index of the electron distribution
@@ -52,16 +59,17 @@ E_52 = 1
 # height of the density function for k = 2
 # Only needed for k = 2, ignoring for now
 
-t_days = [
+t_days_values = [
 1.157*(10**(-4)),
 5.64*(10**(-2)),
 5.585*(10**(-1)),
 3.495,
 13.831
 ]
-
-# Convert from seconds to days [1.000E+01, 4.875E+03, 4.826E+04, 3.020E+05, 1.195E+06]
-# From the output of GS2002_test.f90 in fort.810, we selected 5 iterations to compare against, 0, 27, 37, 45, and 51
+# time since gamma ray burst in units of days(?)
+# Set of 5 values taken from the output of GS2002.f90 to compare against
+# [1.000E+01, 4.875E+03, 4.826E+04, 3.020E+05, 1.195E+06]
+# iterations 0, 27, 37, 45, 51
 # time since explosion in units of days in the observer frame(?)
 
 d_L28 =  2.095 # (10**28)cm
@@ -72,28 +80,38 @@ d_L28 =  2.095 # (10**28)cm
 # https://www.astro.ucla.edu/~wright/CosmoCalc.html
 
 
+
 ##############################################################
 #
-# Main function (Refer to line 328 of GS2002_test.f90)
-#
-# At the end of the fucntion, return F5, F9?
-#
+# BreakCase(): (Refer to line 328 of GS2002_test.f90)
+# 
+# This is the main file for the program. 
+# BreakCase(): outputs equations 5 and 9 from Granot and Sari.
 ##############################################################
 
 
-def BreakCase(b, k, beta_1, beta_2, s, nu_b, nu):
-	match(b, k, beta_1, beta_2, s, nu_b, nu):
+def BreakCase(b, t_days, nu):
+	# b, t_days, and nu are passed arguments from __main__:
+
+
+	# In future iterations, add If k = 0: (or another match case system) for spectral breaks where k = 2
+	match(b):
 	# Values for b, k, beta_1, beta_2, s, and nu_b are given by Granot and Sari
 
-
-
 		# Break 1 for k = 0
-		case(1, 0, 2, Fraction(1, 3), 1.64):
-			# b = 1, k = 0, beta_1 = 2, beta_2 = 1/3, s = 1.64
+		case(1):
+
+			# Given values for b = 1 in Granot and Sari
+			b = 1
+			k = 0
+			beta_1 = 2
+			beta_2 = 1/3
+			s = 1.64
 			# nu_b = nu_sa
+			# nu_sa is the self absortion frequency
 
 
-			# Dummy variables for calculating nu_b | nu_b = nu_
+			# Dummy variables for calculating nu_b
 			# Dummy variation notation will follow as such for all break cases:
 			# var_i = var_x_i for b = x and i being the iteration, x is understood by the case of BreakCase():
 			var1 = (pow((p - 1), 3/5)) / (pow((3*p + 2), 3/5))
@@ -103,10 +121,13 @@ def BreakCase(b, k, beta_1, beta_2, s, nu_b, nu):
 			var5 = pow(n_0, 3/5)
 			var6 = pow(E_52, 1/5)
 
+			# The frequency for the spectral break, b = 1, is the product of the dummy variables
 			nu_1 = 1.24 * var1 * (10**9) * var2 * var3 * var4 * var5 * var6
 			
 
-			# The chunk below solves for F_nu equation 1
+			# Dummy variables for calculating nu_b_ext 
+			# Dummy variation notation is slightly modified, but should be easily understood
+			# var_x_ext_i for b = x and i being the iteration, x is understood by the case of BreakCase():
 			var_1_ext_1 = (pow((p - 1), 6/5)) / ((3*p - 1)*(pow((3*p + 2), 1/5)))
 			var_1_ext_2 = pow((1 + z), 1/2)
 			var_1_ext_3 = pow(epsilon_e_bar, -1)
@@ -116,18 +137,34 @@ def BreakCase(b, k, beta_1, beta_2, s, nu_b, nu):
 			var_1_ext_7 = pow(t_days, 1/2)
 			var_1_ext_8 = pow(d_L28, -2)
 
+
+			# The external frequency for the spectral break, b = 1, is the product of the previous dummy variables
 			nu_1_ext = 0.647 * var_1_ext_1 * var_1_ext_2 * var_1_ext_3 * var_1_ext_4 * var_1_ext_5 * var_1_ext_6 * var_1_ext_7 * var_1_ext_8
 
+
+			# This flux density equation is taken from Granot and Sari and will be used to solve equation 5. 
 			F_nu_1 = nu_1_ext * (pow((nu/nu_1), -s*beta_1) + pow((nu/nu_1), -s*beta_2))**(-1/s)
+
+
+			# This is just for debugging, replace with file output
+			print(f'F_nu_1: {F_nu_1}')
+
 
 			return F_nu_1
 
 
 
 		# Break 2 for k = 0
-		case(2, 0, Fraction(1, 3), Fraction((1-p), 2), (1.84-(0.40*p))):
-			# b = 2, k = 0, beta_1 = 1/3, beta_2 = ((1-p)/2), s = (1.84-(0.40*p))
+		case(2):
+
+			# Given values for b = 2 in Granot and Sari
+			b = 2
+			k = 0
+			beta_1 = 1/3
+			beta_2 = ((1-p)/2)
+			s = (1.84-(0.40*p))
 			# nu_b = nu_m
+			# nu_b being the peak frequency, thus nu_2 should be larger than nu_1 and nu_3
 			
 			# Dummy variables for calculating nu_2
 			var1 = (p - 0.67) * (10**15)
@@ -141,13 +178,20 @@ def BreakCase(b, k, beta_1, beta_2, s, nu_b, nu):
 
 			F_tilde_2 = (1 + pow((nu/nu_2), s*(beta_1 - beta_2)))**(-1/s)
 
+			print(f'F_tilde_2: {F_tilde_2}')
 			return F_tilde_2
 
 
 
 		# Break 3 for k = 0
-		case(3, 0, ((1-p)/2), (-p/2), (1.15-(0.06*p))):
-			# b = 3, k = 0, beta_1 = ((1-p)/2), beta_2 = (-p/2), s = (1.15-(0.06*p))
+		case(3):
+
+			# Given values for b = 3 in Granot and Sari
+			b = 3
+			k = 0
+			beta_1 = ((1-p)/2)
+			beta_2 = (-p/2)
+			s = (1.15-(0.06*p))
 			# nu_b = nu_c
 
 			# Dummy variables for calculating nu_3
@@ -163,14 +207,21 @@ def BreakCase(b, k, beta_1, beta_2, s, nu_b, nu):
 
 			F_tilde_3 = (1 + pow((nu/nu_3), s*(beta_1 - beta_2)))**(-1/s)
 
+			print(f'F_tilde_3: {F_tilde_3}')
 			return F_tilde_3
 
 
 
 		# Break 7 for k = 0
-		case(7, 0, 2, 11/8, (1.99 - 0.04*p)):
-			# b = 7, k = 0, beta_1 = 2, beta_2 = 11/8, s = (1.99 - 0.04*p)
-			# nu_b = nu_ac
+		case(7):
+
+			# Given values for b = 7 in Granot and Sari
+			b = 7
+			k = 0
+			beta_1 = 2
+			beta_2 = 11/8
+			s = (1.99 - 0.04*p)
+			#nu_b = nu_ac
 
 			# dummy variables for calculating nu_7
 			var1 = ( ((3*p-1)**(8/5)) / ((3*p+2)**(8/5)) )
@@ -179,7 +230,7 @@ def BreakCase(b, k, beta_1, beta_2, s, nu_b, nu):
 			var4 = (epsilon_B**(-2/5))
 			var5 = (n_0**(3/10))
 			var6 = (E_52**(-1/10))
-			var7 = (t_day**(3/10))
+			var7 = (t_days**(3/10))
 
 
 			# Function given by nu_b of Granot and Sari
@@ -200,16 +251,23 @@ def BreakCase(b, k, beta_1, beta_2, s, nu_b, nu):
 
 			nu_7_ext = 5.27 * pow(10, -3) * var_7_ext_1 * var_7_ext_2 * var_7_ext_3 * var_7_ext_4 * var_7_ext_5 * var_7_ext_6 * var_7_ext_7 * var_7_ext_8
 
-			F_nu_7 = nu_7_ext( (nu/nu_7)**(-s * beta_1) + (nu/nu_7)**(-s * beta_2) )**(-1/s)
+			F_nu_7 = nu_7_ext*( (nu/nu_7)**(-s * beta_1) + (nu/nu_7)**(-s * beta_2) )**(-1/s)
 
+			print(f'F_nu_7: {F_nu_7}')
 			return F_nu_7
 
 
 
 		# Break 9 for k = 0
-		case(9, 0, -1/2, -p/2, (3.34 - 0.82 * p)):
-			# b = 9, k = 0, beta_1 = -1/2, beta_2 = -p/2, s = (3.34 - 0.82 * p)
-			# nu_b = nu_m
+		case(9):
+
+			# Given values for b = 9 in Granot and Sari
+			b = 9
+			k = 0
+			beta_1 = -1/2
+			beta_2 = -p/2
+			s = (3.34 - 0.82 * p)
+			#nu_b = nu_m
 
 			# dummy variables calculating nu_9
 			var1 = (p - 0.74)
@@ -224,12 +282,20 @@ def BreakCase(b, k, beta_1, beta_2, s, nu_b, nu):
 
 			F_tilde_9 = ( 1 + (nu/nu_9)**(s * (beta_1 - beta_2) ) )**(-1/s)
 
+			print(f'F_tilde_9: {F_tilde_9}')
 			return F_tilde_9
 
 
 		# Break 10 for k = 0
-		case(10, 0, 11/8, 1/3, 1.213):
-			# b = 10, k = 0, beta_1 = 11/8, beta_2 = 1/3, s = (1.213)
+		case(10):
+
+
+			# Given values for b = 10 in Granot and Sari
+			b = 10
+			k = 0
+			beta_1 = 11/8
+			beta_2 = 1/3
+			s = (1.213)
 			#nu_b = nu_sa
 
 			# Dummy variables to calculate nu_10
@@ -245,12 +311,21 @@ def BreakCase(b, k, beta_1, beta_2, s, nu_b, nu):
 
 			F_tilde_10= ( 1 + (nu/nu_10)**(s * (beta_1 - beta_2) ) )**(-1/s)
 
-			return F_tilde_9
+			print(f'F_tilde_10: {F_tilde_10}')
+			return F_tilde_10
 
 
 		# Break 11 for k = 0
-		case(11, 0, 1/3, -1/2, 0.597):
-			# nu_b = nu_c
+		case(11):
+
+
+			# Given values for b = 11 in Granot and Sari
+			b = 11
+			k = 0
+			beta_1 = 1/3
+			beta_2 = -1/2
+			s = 0.597
+			#nu_b = nu_c
 
 			#dummy variables to shorten nu_11
 			var1 = pow((1+z), -1/2)
@@ -260,50 +335,77 @@ def BreakCase(b, k, beta_1, beta_2, s, nu_b, nu):
 			var5 = pow(t_days, -1/2)
 
 			# Function given by nu_b of Granot and Sari
-			nu_11 = 5.86 * 10**12 * var1 * var2 * var3 * var4 * var_11_5
+			nu_11 = 5.86 * 10**12 * var1 * var2 * var3 * var4
 
 			F_tilde_11 = ( 1 + (nu/nu_11)**(s * (beta_1 - beta_2) ) )**(-1/s)
 
-			return F_tilde_9
+			print(f'F_tilde_11: {F_tilde_11}')
+			return(F_tilde_11)
 
 
 		# Else case, I.E. invalid option for b, k, breaks code and outputs error message
 		case _:
 			print("Error: Invalid option for b, k")
-			break
+			pass
+
 
 
 
 ##############################################################
 #
-# Corresponding flux densities
+# Corresponding flux density functions
 #
-# F and F_tilde will be implemented directly into BreakCase():
+# F and F_tilde are implemented directly into BreakCase():
 #
 ##############################################################
+
+
+# Needs to be implemented somewhere in __main__
+#F5(F_nu_1, F_tilde_2, F_tilde_3)
+#F9(F_nu_7, F_tilde_9, F_tilde_10, F_tilde_11)
 
 def F5(F_nu_1, F_tilde_2, F_tilde_3):
 	# Equation 5 from Granot and Sari
 	# Concerned only with breaks, 1, 2, and 3
 
 	F5 = F_nu_1 * F_tilde_2 * F_tilde_3
+	print(F5)
 	return F5
 	# Needs to output somewhere, preferably to a file
 
-def F9(F_nu_7, F_tilde_9, F_tilde_10, F_tilde_11)
+def F9(F_nu_7, F_tilde_9, F_tilde_10, F_tilde_11):
 	# Equation 9 from Granot and Sari
 	# Concerned only with breaks, 7, 9, 10, and 11
 	
 	F9 = F_nu_7 * F_tilde_9 * F_tilde_10 * F_tilde_11
+	print(F9)
 	return F9	
 	# Needs to output somewhere, preferably to a file
 
 
+##############################################################
+#
+# MAIN
+#
+##############################################################
 
 
 
+# runs code on startup
 if __name__ == '__main__':
-	print("test")
-	Breakcase()
-	#F5()
-	#F9()
+
+	# iterates through the five values for t_days to compare against GS2002.f90 
+	for i in t_days_values:
+
+		#Outputs the different t_days values
+		print(f'\n t: {i}')
+
+		for j in nu:
+
+			print(f'nu: {j}')
+
+		# With each value of t_days, iterates through the different breaks in BreakCase
+			for k in b_values:
+				BreakCase(t_days=i, nu=j, b=k)
+				F5(F_nu_1, F_tilde_2, F_tilde_3)
+				F9(F_nu_7, F_tilde_9, F_tilde_10, F_tilde_11)
