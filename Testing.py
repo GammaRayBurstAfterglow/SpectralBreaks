@@ -1,4 +1,5 @@
 import math
+import numpy as np
 
 ###################################################
 #
@@ -18,12 +19,11 @@ b_values = [
 # Spectral breaks 7, 9, 10, and 11 are needed for equation 9
 
 
-nu = 10**6
+nu = np.logspace(6, np.log10(2.418 * 10**26), 100)
+# 100 values spaced evenly on a logarithmic scale from the range below
 # range(10**(6), 2.418*(10**26))
-# range between 10 MHz and 1 TeV
 # convert energies into frequencies
 # KP - Converted TeV to Hz. Someone please check it just to make sure.
-# Need to iterate between 100 evenly space values for the specified range
 
 
 p = 2.23
@@ -369,6 +369,7 @@ def F5(F_nu_1, F_tilde_2, F_tilde_3):
 	# Concerned only with breaks, 1, 2, and 3
 
 	F5 = F_nu_1 * F_tilde_2 * F_tilde_3
+	print(F5)
 	return F5
 	# Needs to output somewhere, preferably to a file
 
@@ -377,6 +378,7 @@ def F9(F_nu_7, F_tilde_9, F_tilde_10, F_tilde_11):
 	# Concerned only with breaks, 7, 9, 10, and 11
 	
 	F9 = F_nu_7 * F_tilde_9 * F_tilde_10 * F_tilde_11
+	print(F9)
 	return F9	
 	# Needs to output somewhere, preferably to a file
 
@@ -392,24 +394,18 @@ def F9(F_nu_7, F_tilde_9, F_tilde_10, F_tilde_11):
 # runs code on startup
 if __name__ == '__main__':
 
-    # Iterate through the five values for t_days to compare against GS2002.f90 
-    for t_days in t_days_values:
-        print(f'\n t: {t_days}')
-        
-        # Dictionary to store BreakCase outputs by break number
-        results = {}
+	# iterates through the five values for t_days to compare against GS2002.f90 
+	for i in t_days_values:
 
-        # Iterate through the different breaks in BreakCase
-        for b in b_values:
-            results[b] = BreakCase(b=b, t_days=t_days, nu=nu)
-        
-        # Calculate F5 if required breaks (1, 2, 3) are present
-        if all(b in results for b in [1, 2, 3]):
-            F5_value = F5(results[1], results[2], results[3])
-            print(f'F5 result for t_days={t_days}: {F5_value}')
+		#Outputs the different t_days values
+		print(f'\n t: {i}')
 
-        # Calculate F9 if required breaks (7, 9, 10, 11) are present
-        if all(b in results for b in [7, 9, 10, 11]):
-            F9_value = F9(results[7], results[9], results[10], results[11])
-            print(f'F9 result for t_days={t_days}: {F9_value}')
+		for j in nu:
 
+			print(f'nu: {j}')
+
+		# With each value of t_days, iterates through the different breaks in BreakCase
+			for k in b_values:
+				BreakCase(t_days=i, nu=j, b=k)
+				F5(F_nu_1, F_tilde_2, F_tilde_3)
+				F9(F_nu_7, F_tilde_9, F_tilde_10, F_tilde_11)
