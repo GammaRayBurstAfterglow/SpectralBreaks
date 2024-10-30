@@ -7,18 +7,24 @@ import math
 ###################################################
 
 # k = 0,2
-#for now, only worried about k=0, but useful for future expansion
+# for now, only worried about k=0, but useful for future expansion
+# For future iterations of the program, we will have a seperate match case system for k=2
 
 b_values = [
 1,2,3,7,9,10,11
 ]
-# possible values of b. Method of selection is not considered, could be input() if desired
+# Spectral breaks needed to fulfil equations 5 and 9 from Granot and Sari
+# Spectral breaks 1, 2, and 3 are needed for equation 5
+# Spectral breaks 7, 9, 10, and 11 are needed for equation 9
+
 
 nu = 10**6
-#range(10**(6), 2.418*(10**26))
+# range(10**(6), 2.418*(10**26))
 # range between 10 MHz and 1 TeV
 # convert energies into frequencies
-#KP - Converted TeV to Hz. Someone please check it just to make sure.
+# KP - Converted TeV to Hz. Someone please check it just to make sure.
+# Need to iterate between 100 evenly space values for the specified range
+
 
 p = 2.23
 # represents the spectral index of the electron distribution
@@ -60,9 +66,10 @@ t_days_values = [
 3.495,
 13.831
 ]
-
-# Convert from seconds to days [1.000E+01, 4.875E+03, 4.826E+04, 3.020E+05, 1.195E+06]
-# From the output of GS2002_test.f90 in fort.810, we selected 5 iterations to compare against, 0, 27, 37, 45, and 51
+# time since gamma ray burst in units of days(?)
+# Set of 5 values taken from the output of GS2002.f90 to compare against
+# [1.000E+01, 4.875E+03, 4.826E+04, 3.020E+05, 1.195E+06]
+# iterations 0, 27, 37, 45, 51
 # time since explosion in units of days in the observer frame(?)
 
 d_L28 =  2.095 # (10**28)cm
@@ -83,7 +90,11 @@ d_L28 =  2.095 # (10**28)cm
 ##############################################################
 
 
-def BreakCase(b, t_days):
+def BreakCase(b, t_days, nu):
+	# b, t_days, and nu are passed arguments from __main__:
+
+
+	# In future iterations, add If k = 0: (or another match case system) for spectral breaks where k = 2
 	match(b):
 	# Values for b, k, beta_1, beta_2, s, and nu_b are given by Granot and Sari
 
@@ -96,10 +107,11 @@ def BreakCase(b, t_days):
 			beta_1 = 2
 			beta_2 = 1/3
 			s = 1.64
-			#nu_b = nu_sa
+			# nu_b = nu_sa
+			# nu_sa is the self absortion frequency
 
 
-			# Dummy variables for calculating nu_b | nu_b = nu_
+			# Dummy variables for calculating nu_b
 			# Dummy variation notation will follow as such for all break cases:
 			# var_i = var_x_i for b = x and i being the iteration, x is understood by the case of BreakCase():
 			var1 = (pow((p - 1), 3/5)) / (pow((3*p + 2), 3/5))
@@ -109,10 +121,13 @@ def BreakCase(b, t_days):
 			var5 = pow(n_0, 3/5)
 			var6 = pow(E_52, 1/5)
 
+			# The frequency for the spectral break, b = 1, is the product of the dummy variables
 			nu_1 = 1.24 * var1 * (10**9) * var2 * var3 * var4 * var5 * var6
 			
 
-			# The chunk below solves for F_nu equation 1
+			# Dummy variables for calculating nu_b_ext 
+			# Dummy variation notation is slightly modified, but should be easily understood
+			# var_x_ext_i for b = x and i being the iteration, x is understood by the case of BreakCase():
 			var_1_ext_1 = (pow((p - 1), 6/5)) / ((3*p - 1)*(pow((3*p + 2), 1/5)))
 			var_1_ext_2 = pow((1 + z), 1/2)
 			var_1_ext_3 = pow(epsilon_e_bar, -1)
@@ -122,11 +137,19 @@ def BreakCase(b, t_days):
 			var_1_ext_7 = pow(t_days, 1/2)
 			var_1_ext_8 = pow(d_L28, -2)
 
+
+			# The external frequency for the spectral break, b = 1, is the product of the previous dummy variables
 			nu_1_ext = 0.647 * var_1_ext_1 * var_1_ext_2 * var_1_ext_3 * var_1_ext_4 * var_1_ext_5 * var_1_ext_6 * var_1_ext_7 * var_1_ext_8
 
+
+			# This flux density equation is taken from Granot and Sari and will be used to solve equation 5. 
 			F_nu_1 = nu_1_ext * (pow((nu/nu_1), -s*beta_1) + pow((nu/nu_1), -s*beta_2))**(-1/s)
 
+
+			# This is just for debugging, replace with file output
 			print(f'F_nu_1: {F_nu_1}')
+
+
 			return F_nu_1
 
 
@@ -140,7 +163,8 @@ def BreakCase(b, t_days):
 			beta_1 = 1/3
 			beta_2 = ((1-p)/2)
 			s = (1.84-(0.40*p))
-			#nu_b = nu_m
+			# nu_b = nu_m
+			# nu_b being the peak frequency, thus nu_2 should be larger than nu_1 and nu_3
 			
 			# Dummy variables for calculating nu_2
 			var1 = (p - 0.67) * (10**15)
@@ -168,7 +192,7 @@ def BreakCase(b, t_days):
 			beta_1 = ((1-p)/2)
 			beta_2 = (-p/2)
 			s = (1.15-(0.06*p))
-			#nu_b = nu_c
+			# nu_b = nu_c
 
 			# Dummy variables for calculating nu_3
 			var1 = (p - 0.46) * (10**13)
@@ -336,7 +360,7 @@ def BreakCase(b, t_days):
 ##############################################################
 
 
-# Needs to be implemented in __main__
+# Needs to be implemented somewhere in __main__
 #F5(F_nu_1, F_tilde_2, F_tilde_3)
 #F9(F_nu_7, F_tilde_9, F_tilde_10, F_tilde_11)
 
@@ -376,7 +400,4 @@ if __name__ == '__main__':
 
 		# With each value of t_days, iterates through the different breaks in BreakCase
 		for j in b_values:
-			BreakCase(b=j, t_days=i)
-
-
-
+			BreakCase(b=j, t_days=i, nu=nu)
