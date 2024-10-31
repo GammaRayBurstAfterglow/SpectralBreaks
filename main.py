@@ -147,7 +147,7 @@ def BreakCase(b, t_days, nu):
 
 
 			# This is just for debugging, replace with file output
-			print(f'F_nu_1: {F_nu_1}')
+			#print(f'F_nu_1: {F_nu_1}')
 
 
 			return F_nu_1
@@ -178,7 +178,7 @@ def BreakCase(b, t_days, nu):
 
 			F_tilde_2 = (1 + pow((nu/nu_2), s*(beta_1 - beta_2)))**(-1/s)
 
-			print(f'F_tilde_2: {F_tilde_2}')
+			#print(f'F_tilde_2: {F_tilde_2}')
 			return F_tilde_2
 
 
@@ -207,7 +207,7 @@ def BreakCase(b, t_days, nu):
 
 			F_tilde_3 = (1 + pow((nu/nu_3), s*(beta_1 - beta_2)))**(-1/s)
 
-			print(f'F_tilde_3: {F_tilde_3}')
+			#print(f'F_tilde_3: {F_tilde_3}')
 			return F_tilde_3
 
 
@@ -253,7 +253,7 @@ def BreakCase(b, t_days, nu):
 
 			F_nu_7 = nu_7_ext*( (nu/nu_7)**(-s * beta_1) + (nu/nu_7)**(-s * beta_2) )**(-1/s)
 
-			print(f'F_nu_7: {F_nu_7}')
+			#print(f'F_nu_7: {F_nu_7}')
 			return F_nu_7
 
 
@@ -282,7 +282,7 @@ def BreakCase(b, t_days, nu):
 
 			F_tilde_9 = ( 1 + (nu/nu_9)**(s * (beta_1 - beta_2) ) )**(-1/s)
 
-			print(f'F_tilde_9: {F_tilde_9}')
+			#print(f'F_tilde_9: {F_tilde_9}')
 			return F_tilde_9
 
 
@@ -311,7 +311,7 @@ def BreakCase(b, t_days, nu):
 
 			F_tilde_10= ( 1 + (nu/nu_10)**(s * (beta_1 - beta_2) ) )**(-1/s)
 
-			print(f'F_tilde_10: {F_tilde_10}')
+			#print(f'F_tilde_10: {F_tilde_10}')
 			return F_tilde_10
 
 
@@ -339,7 +339,7 @@ def BreakCase(b, t_days, nu):
 
 			F_tilde_11 = ( 1 + (nu/nu_11)**(s * (beta_1 - beta_2) ) )**(-1/s)
 
-			print(f'F_tilde_11: {F_tilde_11}')
+			#print(f'F_tilde_11: {F_tilde_11}')
 			return(F_tilde_11)
 
 
@@ -369,7 +369,7 @@ def F5(F_nu_1, F_tilde_2, F_tilde_3):
 	# Concerned only with breaks, 1, 2, and 3
 
 	F5 = F_nu_1 * F_tilde_2 * F_tilde_3
-	print(F5)
+	#print(F5)
 	return F5
 	# Needs to output somewhere, preferably to a file
 
@@ -378,7 +378,7 @@ def F9(F_nu_7, F_tilde_9, F_tilde_10, F_tilde_11):
 	# Concerned only with breaks, 7, 9, 10, and 11
 	
 	F9 = F_nu_7 * F_tilde_9 * F_tilde_10 * F_tilde_11
-	print(F9)
+	#print(F9)
 	return F9	
 	# Needs to output somewhere, preferably to a file
 
@@ -391,21 +391,29 @@ def F9(F_nu_7, F_tilde_9, F_tilde_10, F_tilde_11):
 
 
 
+
 # runs code on startup
 if __name__ == '__main__':
 
-	# iterates through the five values for t_days to compare against GS2002.f90 
-	for i in t_days_values:
+    # Iterate through the five values for t_days to compare against GS2002.f90 
+    for t_days in t_days_values:
+        print(f'\n')
+        
+        # Dictionary to store BreakCase outputs by break number
+        results = {}
 
-		#Outputs the different t_days values
-		print(f'\n t: {i}')
+        # Iterate through the different breaks in BreakCase
+        for b in b_values:
+            results[b] = BreakCase(b=b, t_days=t_days, nu=nu)
+        
+        # Calculate F5 if required breaks (1, 2, 3) are present
+        # Displayed as an array for nu[0] to nu[99]
+        if all(b in results for b in [1, 2, 3]):
+            F5_value = F5(results[1], results[2], results[3])
+            print(f'F5 for t_days={t_days}:\n {F5_value}')
 
-		for j in nu:
-
-			print(f'nu: {j}')
-
-		# With each value of t_days, iterates through the different breaks in BreakCase
-			for k in b_values:
-				BreakCase(t_days=i, nu=j, b=k)
-				F5(F_nu_1, F_tilde_2, F_tilde_3)
-				F9(F_nu_7, F_tilde_9, F_tilde_10, F_tilde_11)
+        # Displayed as an array for nu[0] to nu[99]
+        # Calculate F9 if required breaks (7, 9, 10, 11) are present
+        if all(b in results for b in [7, 9, 10, 11]):
+            F9_value = F9(results[7], results[9], results[10], results[11])
+            print(f'F9 for t_days={t_days}:\n {F9_value}')
