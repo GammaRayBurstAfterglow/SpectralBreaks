@@ -395,25 +395,33 @@ def F9(F_nu_7, F_tilde_9, F_tilde_10, F_tilde_11):
 # runs code on startup
 if __name__ == '__main__':
 
-    # Iterate through the five values for t_days to compare against GS2002.f90 
-    for t_days in t_days_values:
-        print(f'\n')
-        
-        # Dictionary to store BreakCase outputs by break number
-        results = {}
+	# Loop through the specified days
+	for t_days in t_days_values:
+		print(f'\n\nResults for t_days={t_days}:\n')
 
-        # Iterate through the different breaks in BreakCase
-        for b in b_values:
-            results[b] = BreakCase(b=b, t_days=t_days, nu=nu)
-        
-        # Calculate F5 if required breaks (1, 2, 3) are present
-        # Displayed as an array for nu[0] to nu[99]
-        if all(b in results for b in [1, 2, 3]):
-            F5_value = F5(results[1], results[2], results[3])
-            print(f'F5 for t_days={t_days}:\n {F5_value}')
 
-        # Displayed as an array for nu[0] to nu[99]
-        # Calculate F9 if required breaks (7, 9, 10, 11) are present
-        if all(b in results for b in [7, 9, 10, 11]):
-            F9_value = F9(results[7], results[9], results[10], results[11])
-            print(f'F9 for t_days={t_days}:\n {F9_value}')
+		# These are each an array for the value t_days
+		F_nu_1 = BreakCase(1, t_days, nu)
+		F_tilde_2 = BreakCase(2, t_days, nu)
+		F_tilde_3 = BreakCase(3, t_days, nu)
+
+		# Multiplying each array f_nu_1, f_tilde_2, f_tilde_3 for F5
+
+		# Do we need the F5 function ?
+
+		F5_results = F5(F_nu_1, F_tilde_2, F_tilde_3)
+
+		F_nu_7 = BreakCase(7, t_days, nu)
+		F_tilde_9 = BreakCase(9, t_days, nu)
+		F_tilde_10 = BreakCase(10, t_days, nu)
+		F_tilde_11 = BreakCase(11, t_days, nu)
+		
+		F9_results = F9(F_nu_7, F_tilde_9, F_tilde_10, F_tilde_11)
+
+
+		print(f"F5 values:\n{F5_results}")
+
+		print(f"\nF9 values:\n{F9_results}")
+
+		print(f"\n nu:\n{nu}")
+  
