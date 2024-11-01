@@ -1,4 +1,5 @@
 import math
+import matplotlib.pyplot as plt
 import numpy as np
 
 ###################################################
@@ -8,12 +9,14 @@ import numpy as np
 ###################################################
 
 # k = 0,2
+# unitless
 # for now, only worried about k=0, but useful for future expansion
 # For future iterations of the program, we will have a seperate match case system for k=2
 
 b_values = [
 1,2,3,7,9,10,11
 ]
+# unitless
 # Spectral breaks needed to fulfil equations 5 and 9 from Granot and Sari
 # Spectral breaks 1, 2, and 3 are needed for equation 5
 # Spectral breaks 7, 9, 10, and 11 are needed for equation 9
@@ -22,25 +25,30 @@ b_values = [
 nu = np.logspace(6, np.log10(2.418* (10**26)), 100)
 # 100 values spaced evenly on a logarithmic scale from the range below
 # range(10**(6), 2.418*(10**26))
+# Hz 
 # convert energies into frequencies
-# KP - Converted TeV to Hz. Someone please check it just to make sure.
 
 
 p = 2.23
+# unitless
 # represents the spectral index of the electron distribution
 # number of electrons with energy E is proportional to E^(-p)
 # range between 2 - 4, 2.5 preferred value.
 
 z = 1 
+# unitless
 # cosmological red shift
 
 epsilon_e = 0.1
+# unitless
 #range(10**(-6), 0.4)
 # fraction of the total energy density in electrons
 
 epsilon_e_bar = (epsilon_e*(p-2)) / (p-1)
+# unitless
 
 epsilon_B = 0.01
+# unitless
 #range(10**(-9) 0.3)
 # fraction total energy density in the magnetic field 
 
@@ -53,11 +61,23 @@ n_0 = 1
 
 E_52 = 1
 #range(10**(-4), 10*(2))
+# Technically unitless, because energy divided by 10^52 ergs
 # explosion energy of the GRB in units of 10^52 ergs
 
 # A_star = 
 # height of the density function for k = 2
 # Only needed for k = 2, ignoring for now
+
+'''
+t_days_values = [
+1.000E+01,
+4.875E+03,
+4.826E+04,
+3.020E+05,
+1.195E+06
+]
+'''
+
 
 t_days_values = [
 1.157*(10**(-4)),
@@ -66,6 +86,7 @@ t_days_values = [
 3.495,
 13.831
 ]
+
 # time since gamma ray burst in units of days(?)
 # Set of 5 values taken from the output of GS2002.f90 to compare against
 # [1.000E+01, 4.875E+03, 4.826E+04, 3.020E+05, 1.195E+06]
@@ -360,9 +381,24 @@ def BreakCase(b, t_days, nu):
 # runs code on startup
 if __name__ == '__main__':
 
+	# For making the F5 graphs
+	plt.figure(1)
+	plt.xlabel('log10nu')
+	plt.ylabel('log10F5')
+	plt.title("F5 in log10Jy")
+
+	# For making the F9 graphs
+	plt.figure(2)
+	plt.xlabel('log10nu')
+	plt.ylabel('log10F9')
+	plt.title("F9 in log10Jy")	
+
+
+
 	# Loop through the specified days
-	for t_days in t_days_values:
+	for t_days, i in zip(t_days_values, [1, 2, 3, 4, 5]):
 		print(f'Computing F5, F9 for t_days={t_days}')
+
 
 
 		# These are each an array for the value t_days
@@ -379,20 +415,47 @@ if __name__ == '__main__':
 
 
 		# Multiplying each array f_nu_1, f_tilde_2, f_tilde_3 to compute the array, F5
-		F5 = F_nu_1 * F_tilde_2 * F_tilde_3
+		log_F5 = np.log10(F_nu_1 * F_tilde_2 * F_tilde_3 * np.full(nu.shape, 10**(3)))
 		
 		# Multiplying each array f_nu_7, f_tilde_9, f_tilde_10, f_tilde_11 to compute the array, F9
-		F9 = F_nu_7 * F_tilde_9 * F_tilde_10 * F_tilde_11
+		log_F9 = np.log10(F_nu_7 * F_tilde_9 * F_tilde_10 * F_tilde_11 * np.full(nu.shape, 10**(3)))
 
 		# Makes a column for t_days, this is the simplest way to work with the csv file
-		t_days_column = np.full(F5.shape, t_days)
+		t_days_column = np.full(log_F5.shape, t_days)
 
 		# Creates a matrix with t_days_column, F5, F9, and nu as the columns
-		matrix = np.column_stack((t_days_column, F5, F9, nu))
+		matrix = np.column_stack((t_days_column, log_F5, log_F9, nu))
+
+
 
 		# Saves the matrix to a csv file instead of printing to the terminal (Saves values up to 50 decimal places, but excel won't do all that)
 		with open("output.csv", "a") as f:
-			np.savetxt(f, matrix, delimiter=",", header="t_days, F5, F9, nu", comments='', fmt='%.50f')
+			np.savetxt(f, matrix, delimiter=",", header="t_days, log_F5, log_F9, nu", comments='', fmt='%.15f')
+
+
+
+		# Plot log_F5 for the current t_days on the F5 figure
+		plt.figure(1)
+		plt.plot(np.log10(nu), log_F5, label=f'{i}')
+
+		# Plot log_F9 for the current t_days on the F9 figure
+		plt.figure(2)
+		plt.plot(np.log10(nu), log_F9, label=f'{i}')
+
+
+
+	# Finalize F5 plot
+	plt.figure(1)
+	plt.legend()
+	plt.savefig("./plots/F5.png")
+
+	# Finalize F9 plot
+	plt.figure(2)
+	plt.legend()
+	plt.savefig("./plots/F9.png")
+
+
+
 
 	print("Results in output.csv")
 
