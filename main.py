@@ -429,7 +429,7 @@ if __name__ == '__main__':
 
 
 		# Saves the matrix to a csv file instead of printing to the terminal (Saves values up to 50 decimal places, but excel won't do all that)
-		with open("output.csv", "a") as f:
+		with open("./output/data.csv", "a") as f:
 			np.savetxt(f, matrix, delimiter=",", header="t_days, log_F5, log_F9, nu", comments='', fmt='%.15f')
 
 
@@ -447,17 +447,15 @@ if __name__ == '__main__':
 	# Finalize F5 plot
 	plt.figure(1)
 	plt.legend()
-	plt.savefig("./plots/F5.png")
+	plt.savefig("./output/F5.png")
 
 	# Finalize F9 plot
 	plt.figure(2)
 	plt.legend()
-	plt.savefig("./plots/F9.png")
+	plt.savefig("./output/F9.png")
 
 
 
 
-	print("Results in output.csv")
-
-
-		
+	print("\nResults in data.csv")
+	print("Figures saved as F5.png, F9.png\n")
