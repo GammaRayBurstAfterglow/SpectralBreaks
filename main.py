@@ -116,14 +116,13 @@ def BreakCase(b, t_days, nu):
 
 
 	# In future iterations, add If k = 0: (or another match case system) for spectral breaks where k = 2
-	match(b):
+	match b:
 	# Values for b, k, beta_1, beta_2, s, and nu_b are given by Granot and Sari
 
 		# Break 1 for k = 0
-		case(1):
+		case 1:
 
 			# Given values for b = 1 in Granot and Sari
-			b = 1
 			k = 0
 			beta_1 = 2
 			beta_2 = 1/3
@@ -176,17 +175,16 @@ def BreakCase(b, t_days, nu):
 
 
 		# Break 2 for k = 0
-		case(2):
+		case 2:
 
 			# Given values for b = 2 in Granot and Sari
-			b = 2
 			k = 0
 			beta_1 = 1/3
 			beta_2 = ((1-p)/2)
 			s = (1.84-(0.40*p))
 			# nu_b = nu_m
 			# nu_b being the peak frequency, thus nu_2 should be larger than nu_1 and nu_3
-			
+
 			# Dummy variables for calculating nu_2
 			var1 = (p - 0.67) * (10**15)
 			var2 = pow((1 + z), 1/2)
@@ -205,10 +203,9 @@ def BreakCase(b, t_days, nu):
 
 
 		# Break 3 for k = 0
-		case(3):
+		case 3:
 
 			# Given values for b = 3 in Granot and Sari
-			b = 3
 			k = 0
 			beta_1 = ((1-p)/2)
 			beta_2 = (-p/2)
@@ -234,10 +231,9 @@ def BreakCase(b, t_days, nu):
 
 
 		# Break 7 for k = 0
-		case(7):
+		case 7:
 
 			# Given values for b = 7 in Granot and Sari
-			b = 7
 			k = 0
 			beta_1 = 2
 			beta_2 = 11/8
@@ -280,10 +276,9 @@ def BreakCase(b, t_days, nu):
 
 
 		# Break 9 for k = 0
-		case(9):
+		case 9:
 
 			# Given values for b = 9 in Granot and Sari
-			b = 9
 			k = 0
 			beta_1 = -1/2
 			beta_2 = -p/2
@@ -308,11 +303,10 @@ def BreakCase(b, t_days, nu):
 
 
 		# Break 10 for k = 0
-		case(10):
+		case 10:
 
 
 			# Given values for b = 10 in Granot and Sari
-			b = 10
 			k = 0
 			beta_1 = 11/8
 			beta_2 = 1/3
@@ -337,11 +331,10 @@ def BreakCase(b, t_days, nu):
 
 
 		# Break 11 for k = 0
-		case(11):
+		case 11:
 
 
 			# Given values for b = 11 in Granot and Sari
-			b = 11
 			k = 0
 			beta_1 = 1/3
 			beta_2 = -1/2
