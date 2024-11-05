@@ -359,8 +359,7 @@ def BreakCase(b, t_days, nu):
 
         # Else case, I.E. invalid option for b, k, breaks code and outputs error message
         case _:
-            print("Error: Invalid option for b, k")
-            pass
+            raise ValueError("Error: Invalid option for b, k")
 
 
 
