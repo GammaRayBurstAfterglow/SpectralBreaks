@@ -354,7 +354,7 @@ def BreakCase(b, t_days, nu):
             F_tilde_11 = ( 1 + (nu/nu_11)**(s * (beta_1 - beta_2) ) )**(-1/s)
 
             #print(f'F_tilde_11: {F_tilde_11}')
-            return(F_tilde_11)
+            return F_tilde_11
 
 
         # Else case, I.E. invalid option for b, k, breaks code and outputs error message
