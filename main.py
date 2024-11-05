@@ -406,10 +406,10 @@ def main():
 
 
         # Multiplying each array f_nu_1, f_tilde_2, f_tilde_3 to compute the array, F5
-        log_F5 = np.log10(F_nu_1 * F_tilde_2 * F_tilde_3 * np.full(nu.shape, 10**(3)))
+        log_F5 = np.log10(F_nu_1 * F_tilde_2 * F_tilde_3 * np.full(nu.shape, 10**3))
 
         # Multiplying each array f_nu_7, f_tilde_9, f_tilde_10, f_tilde_11 to compute the array, F9
-        log_F9 = np.log10(F_nu_7 * F_tilde_9 * F_tilde_10 * F_tilde_11 * np.full(nu.shape, 10**(3)))
+        log_F9 = np.log10(F_nu_7 * F_tilde_9 * F_tilde_10 * F_tilde_11 * np.full(nu.shape, 10**3))
 
         # Makes a column for t_days, this is the simplest way to work with the csv file
         t_days_column = np.full(log_F5.shape, t_days)
