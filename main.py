@@ -444,11 +444,10 @@ def main():
     plt.legend()
     plt.savefig("./output/F9.png")
 
-
-
-
-    print("\nResults in data.csv")
-    print("Figures saved as F5.png, F9.png\n")
+    print()
+    print("Results in data.csv")
+    print("Figures saved as F5.png, F9.png")
+    print()
 
 # runs code on startup
 if __name__ == '__main__':
