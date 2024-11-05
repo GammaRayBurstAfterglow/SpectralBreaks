@@ -370,9 +370,7 @@ def BreakCase(b, t_days, nu):
 #
 ##############################################################
 
-
-# runs code on startup
-if __name__ == '__main__':
+def main():
 
     # For making the F5 graphs
     plt.figure(1)
@@ -452,3 +450,7 @@ if __name__ == '__main__':
 
     print("\nResults in data.csv")
     print("Figures saved as F5.png, F9.png\n")
+
+# runs code on startup
+if __name__ == '__main__':
+    main()
