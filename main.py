@@ -22,9 +22,9 @@ b_values = [
 # Spectral breaks 7, 9, 10, and 11 are needed for equation 9
 
 
-nu = np.logspace(6, np.log10(2.418* (10**26)), 100)
+nu = np.logspace(6, np.log10(2.418e26), 100)
 # 100 values spaced evenly on a logarithmic scale from the range below
-# range(10**(6), 2.418*(10**26))
+# range(1e6, 2.418e26)
 # Hz
 # convert energies into frequencies
 
@@ -41,7 +41,7 @@ z = 1
 
 epsilon_e = 0.1
 # unitless
-#range(10**(-6), 0.4)
+#range(1e-6, 0.4)
 # fraction of the total energy density in electrons
 
 epsilon_e_bar = (epsilon_e*(p-2)) / (p-1)
@@ -49,18 +49,18 @@ epsilon_e_bar = (epsilon_e*(p-2)) / (p-1)
 
 epsilon_B = 0.01
 # unitless
-#range(10**(-9) 0.3)
+#range(1e-9 0.3)
 # fraction total energy density in the magnetic field
 
 epsilon_p = 1 - (epsilon_e + epsilon_B)
 
 n_0 = 1
-#range(10**(-4), 10**(3))
+#range(1e-4, 1e3)
 # ambient density in units of particles/cm^3
 # height of the density function for k = 0
 
 E_52 = 1
-#range(10**(-4), 10*(2))
+#range(1e-4, 10*2)
 # Technically unitless, because energy divided by 10^52 ergs
 # explosion energy of the GRB in units of 10^52 ergs
 
@@ -93,7 +93,7 @@ t_days_values = [
 # iterations 0, 27, 37, 45, 51
 # time since explosion in units of days in the observer frame(?)
 
-d_L28 =  2.095 # (10**28)cm
+d_L28 =  2.095 # (1e28)cm
 # 6787.5 Mpc convert to 10^28
 # luminosity distance in units of 10^28 cm
 # ned wright cosmology calculator to convert z to d_L28
@@ -142,7 +142,7 @@ def BreakCase(b, t_days, nu):
             var6 = pow(E_52, 1/5)
 
             # The frequency for the spectral break, b = 1, is the product of the dummy variables
-            nu_1 = 1.24 * var1 * (10**9) * var2 * var3 * var4 * var5 * var6
+            nu_1 = 1.24e9 * var1 * var2 * var3 * var4 * var5 * var6
 
 
             # Dummy variables for calculating nu_b_ext
@@ -251,7 +251,7 @@ def BreakCase(b, t_days, nu):
 
 
             # Function given by nu_b of Granot and Sari
-            nu_7 = 1.12 * var1 * (10**8) * var2 * var3 * var4 * var5 * var6 * var7
+            nu_7 = 1.12e8 * var1 * var2 * var3 * var4 * var5 * var6 * var7
 
 
             #nu_7_ext:
@@ -266,7 +266,7 @@ def BreakCase(b, t_days, nu):
             var_7_ext_7 = pow(t_days, 11/10)
             var_7_ext_8 = pow(d_L28, -2)
 
-            nu_7_ext = 5.27 * pow(10, -3) * var_7_ext_1 * var_7_ext_2 * var_7_ext_3 * var_7_ext_4 * var_7_ext_5 * var_7_ext_6 * var_7_ext_7 * var_7_ext_8
+            nu_7_ext = 5.27e-3 * var_7_ext_1 * var_7_ext_2 * var_7_ext_3 * var_7_ext_4 * var_7_ext_5 * var_7_ext_6 * var_7_ext_7 * var_7_ext_8
 
             F_nu_7 = nu_7_ext*( (nu/nu_7)**(-s * beta_1) + (nu/nu_7)**(-s * beta_2) )**(-1/s)
 
@@ -294,7 +294,7 @@ def BreakCase(b, t_days, nu):
             var6 = t_days**(-3/2)
 
             # Function given by nu_b of Granot and Sari
-            nu_9 = 3.94 * var1 * 10**15 * var2 * var3 * var4 * var5 * var6
+            nu_9 = 3.94e15 * var1 * var2 * var3 * var4 * var5 * var6
 
             F_tilde_9 = ( 1 + (nu/nu_9)**(s * (beta_1 - beta_2) ) )**(-1/s)
 
@@ -321,7 +321,7 @@ def BreakCase(b, t_days, nu):
             var5 = t_days**(-1/2)
 
             # Function given by nu_b of Granot and Sari
-            nu_10 = 1.32 * 10**10 * var1 * var2 * var3 * var4 * var5
+            nu_10 = 1.32e10 * var1 * var2 * var3 * var4 * var5
 
 
             F_tilde_10= ( 1 + (nu/nu_10)**(s * (beta_1 - beta_2) ) )**(-1/s)
@@ -349,7 +349,7 @@ def BreakCase(b, t_days, nu):
             var5 = pow(t_days, -1/2)
 
             # Function given by nu_b of Granot and Sari
-            nu_11 = 5.86 * 10**12 * var1 * var2 * var3 * var4
+            nu_11 = 5.86e12 * var1 * var2 * var3 * var4
 
             F_tilde_11 = ( 1 + (nu/nu_11)**(s * (beta_1 - beta_2) ) )**(-1/s)
 
