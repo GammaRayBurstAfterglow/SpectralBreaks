@@ -387,7 +387,7 @@ def main():
 
 
     # Loop through the specified days
-    for t_days, i in zip(t_days_values, [1, 2, 3, 4, 5]):
+    for (i, t_days) in enumerate(t_days_values, start=1):
         print(f'Computing F5, F9 for t_days={t_days}')
 
 
