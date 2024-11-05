@@ -123,7 +123,6 @@ def BreakCase(b, t_days, nu):
 		case(1):
 
 			# Given values for b = 1 in Granot and Sari
-			b = 1
 			k = 0
 			beta_1 = 2
 			beta_2 = 1/3
@@ -179,7 +178,6 @@ def BreakCase(b, t_days, nu):
 		case(2):
 
 			# Given values for b = 2 in Granot and Sari
-			b = 2
 			k = 0
 			beta_1 = 1/3
 			beta_2 = ((1-p)/2)
@@ -208,7 +206,6 @@ def BreakCase(b, t_days, nu):
 		case(3):
 
 			# Given values for b = 3 in Granot and Sari
-			b = 3
 			k = 0
 			beta_1 = ((1-p)/2)
 			beta_2 = (-p/2)
@@ -237,7 +234,6 @@ def BreakCase(b, t_days, nu):
 		case(7):
 
 			# Given values for b = 7 in Granot and Sari
-			b = 7
 			k = 0
 			beta_1 = 2
 			beta_2 = 11/8
@@ -283,7 +279,6 @@ def BreakCase(b, t_days, nu):
 		case(9):
 
 			# Given values for b = 9 in Granot and Sari
-			b = 9
 			k = 0
 			beta_1 = -1/2
 			beta_2 = -p/2
@@ -312,7 +307,6 @@ def BreakCase(b, t_days, nu):
 
 
 			# Given values for b = 10 in Granot and Sari
-			b = 10
 			k = 0
 			beta_1 = 11/8
 			beta_2 = 1/3
@@ -341,7 +335,6 @@ def BreakCase(b, t_days, nu):
 
 
 			# Given values for b = 11 in Granot and Sari
-			b = 11
 			k = 0
 			beta_1 = 1/3
 			beta_2 = -1/2
