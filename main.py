@@ -80,11 +80,11 @@ t_days_values = [
 
 
 t_days_values = [
-1.157*(10**(-4)),
-5.64*(10**(-2)),
-5.585*(10**(-1)),
-3.495,
-13.831
+    1.157e-4,
+    5.64e-2,
+    5.585e-1,
+    3.495,
+    13.831,
 ]
 
 # time since gamma ray burst in units of days(?)
