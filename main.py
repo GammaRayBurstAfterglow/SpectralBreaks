@@ -1,6 +1,7 @@
 import math
 import matplotlib.pyplot as plt
 import numpy as np
+from numpy import sqrt
 
 ###################################################
 #
@@ -190,7 +191,7 @@ def BreakCase(b, t_days, nu):
             var2 = pow((1 + z), 1/2)
             var3 = pow(E_52, 1/2)
             var4 = pow(epsilon_e_bar, 2)
-            var5 = pow(epsilon_B, 1/2)
+            var5 = sqrt(epsilon_B)
             var6 = pow(t_days, -3/2)
 
             nu_2 = 3.73 * var1 * var2 * var3 * var4 * var5 * var6
@@ -287,10 +288,10 @@ def BreakCase(b, t_days, nu):
 
             # dummy variables calculating nu_9
             var1 = (p - 0.74)
-            var2 = (1 + z)**(1/2)
+            var2 = sqrt(1 + z)
             var3 = epsilon_e_bar**2
-            var4 = epsilon_B**(1/2)
-            var5 = E_52**(1/2)
+            var4 = sqrt(epsilon_B)
+            var5 = sqrt(E_52)
             var6 = t_days**(-3/2)
 
             # Function given by nu_b of Granot and Sari
