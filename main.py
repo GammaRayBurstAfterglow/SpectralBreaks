@@ -218,7 +218,7 @@ def BreakCase(b, t_days, nu):
             var2 = math.exp(-1.16*p)
             var3 = pow((1 + z), -1/2)
             var4 = pow(epsilon_B, -3/2)
-            var5 = pow(n_0, -1)
+            var5 = 1/n_0
             var6 = pow(E_52, -1/2)
             var7 = pow(t_days, -1/2)
 
@@ -345,7 +345,7 @@ def BreakCase(b, t_days, nu):
             #dummy variables to shorten nu_11
             var1 = pow((1+z), -1/2)
             var2 = pow(epsilon_B, -3/2)
-            var3 = pow(n_0, -1)
+            var3 = 1 / n_0
             var4 = pow(E_52, -1/2)
             var5 = pow(t_days, -1/2)
 
