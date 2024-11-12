@@ -180,13 +180,13 @@ def BreakCase(b, t_days, nu):
             # Given values for b = 2 in Granot and Sari
             k = 0
             beta_1 = 1/3
-            beta_2 = ((1-p)/2)
-            s = (1.84-(0.40*p))
+            beta_2 = (1-p) / 2
+            s = 1.84 - (0.40*p)
             # nu_b = nu_m
             # nu_b being the peak frequency, thus nu_2 should be larger than nu_1 and nu_3
 
             # Dummy variables for calculating nu_2
-            var1 = (p - 0.67) * (10**15)
+            var1 = (p - 0.67) * 1e15
             var2 = pow((1 + z), 1/2)
             var3 = pow(E_52, 1/2)
             var4 = pow(epsilon_e_bar, 2)
@@ -207,13 +207,13 @@ def BreakCase(b, t_days, nu):
 
             # Given values for b = 3 in Granot and Sari
             k = 0
-            beta_1 = ((1-p)/2)
-            beta_2 = (-p/2)
-            s = (1.15-(0.06*p))
+            beta_1 = (1-p) / 2
+            beta_2 = -p / 2
+            s = 1.15 - (0.06*p)
             # nu_b = nu_c
 
             # Dummy variables for calculating nu_3
-            var1 = (p - 0.46) * (10**13)
+            var1 = (p - 0.46) * 1e13
             var2 = math.exp(-1.16*p)
             var3 = pow((1 + z), -1/2)
             var4 = pow(epsilon_B, -3/2)
@@ -282,7 +282,7 @@ def BreakCase(b, t_days, nu):
             k = 0
             beta_1 = -1/2
             beta_2 = -p/2
-            s = (3.34 - 0.82 * p)
+            s = 3.34 - 0.82 * p
             #nu_b = nu_m
 
             # dummy variables calculating nu_9
