@@ -14,6 +14,8 @@ import pandas as pd
 # for now, only worried about k=0, but useful for future expansion
 # For future iterations of the program, we will have a seperate match case system for k=2
 
+# TODO: astropy has units support. use them to ensure calculations are consistent?
+
 b_values = [
 	1, 2, 3, 7, 9, 10, 11,
 ]
