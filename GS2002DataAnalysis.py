@@ -80,11 +80,13 @@ plt.savefig("./output/GS2002.png")
 GS2002_Data = np.empty((641, 6))
 
 GS2002_Data[:,0] = x[0]
-GS2002_Data[:,1] = y[0]
-GS2002_Data[:,2] = y[1]
-GS2002_Data[:,3] = y[2]
-GS2002_Data[:,4] = y[3]
-GS2002_Data[:,5] = y[4]
+for k in range(5):
+	GS2002_Data[:,k+1] = y[k]
+#GS2002_Data[:,1] = y[0]
+#GS2002_Data[:,2] = y[1]
+#GS2002_Data[:,3] = y[2]
+#GS2002_Data[:,4] = y[3]
+#GS2002_Data[:,5] = y[4]
 
 
 
