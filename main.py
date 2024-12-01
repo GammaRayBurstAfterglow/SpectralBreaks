@@ -71,15 +71,14 @@ E_52 = 1
 # height of the density function for k = 2
 # Only needed for k = 2, ignoring for now
 
-'''
-t_days_values = [
-1.000E+01,
-4.875E+03,
-4.826E+04,
-3.020E+05,
-1.195E+06
-]
-'''
+
+#t_days_values = [
+#   1.000E+01,
+#   4.875E+03,
+#   4.826E+04,
+#   3.020E+05,
+#   1.195E+06,
+#]
 
 
 t_days_values = [

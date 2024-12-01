@@ -13,8 +13,7 @@ def euler1(f,a,b,N,y0):
     """ Implementation of Euler's method for solving 1D 1st-order ODEs.
         Input arguments:
         (1) f: function to compute derivative at given x, y
-        (2) a: starting point of interval over which we want to solve
-                the ODE
+        (2) a: starting point of interval over which we want to solve the ODE
         (3) b: ending point of the interval
         (4) N: number of steps to take
         (5) y0: intial value of y, i.e. y(a)
@@ -35,8 +34,7 @@ def heun1(f,a,b,N,y0):
     """ Implementation of Heun's method for solving 1D 1st-order ODEs.
         Input arguments:
         (1) f: function to compute derivative at given x, y
-        (2) a: starting point of interval over which we want to solve
-                the ODE
+        (2) a: starting point of interval over which we want to solve the ODE
         (3) b: ending point of the interval
         (4) N: number of steps to take
         (5) y0: intial value of y, i.e. y(a)
@@ -58,8 +56,7 @@ def rk4_1(f,a,b,N,y0):
         order ODEs.
         Input arguments:
         (1) f: function to compute derivative at given x, y
-        (2) a: starting point of interval over which we want to solve
-                the ODE
+        (2) a: starting point of interval over which we want to solve the ODE
         (3) b: ending point of the interval
         (4) N: number of steps to take
         (5) y0: intial value of y, i.e. y(a)
