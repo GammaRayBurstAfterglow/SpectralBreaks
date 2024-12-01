@@ -88,10 +88,17 @@ for k in range(5):
 #GS2002_Data[:,4] = y[3]
 #GS2002_Data[:,5] = y[4]
 
-
+headers = [
+	"log(nu) Hz",
+	"log(F_nu) [Jy] i_tm=1",
+	"log(F_nu) [Jy] i_tm=2",
+	"log(F_nu) [Jy] i_tm=3",
+	"log(F_nu) [Jy] i_tm=4",
+	"log(F_nu) [Jy] i_tm=5",
+]
 
 
 with open("./output/GS2002_Data.csv", "a") as f:
     np.savetxt(f, GS2002_Data, delimiter=",",
-			   header="Log(nu) [Hz], Log(F_nu) [Jy] i_tm=1, Log(F_nu) [Jy] i_tm=2, Log(F_nu) [Jy] i_tm=3, Log(F_nu) [Jy] i_tm=4, Log(F_nu) [Jy] i_tm=5",
+			   header=",".join(headers),
 			   fmt='%.5f')
