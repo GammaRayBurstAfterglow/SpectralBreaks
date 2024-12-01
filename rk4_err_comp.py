@@ -2,26 +2,25 @@ from math import exp, sqrt, sin, cos, log, pi
 import numpy as np
 import matplotlib.pyplot as plt
 
-""" Define the derivative part of the ODE.  Since this is an ODE,
-      we might need both x and y -- so pass them both regardless
-      of whether or not they're used in the computation.
-"""
+# Define the derivative part of the ODE.  Since this is an ODE,
+#   we might need both x and y -- so pass them both regardless
+#   of whether or not they're used in the computation.
 def f(x,y):
     return 0.5*sin(x)-cos(pi*x)
 
 
-""" Implementation of Euler's method for solving 1D 1st-order ODEs.
-    Input arguments:
-      (1) f: function to compute derivative at given x, y
-      (2) a: starting point of interval over which we want to solve
-               the ODE
-      (3) b: ending point of the interval
-      (4) N: number of steps to take
-      (5) y0: intial value of y, i.e. y(a)
-    Returns:
-      (1) y: value of y after N steps of Euler method, i.e. y(b)
-"""
 def euler1(f,a,b,N,y0):
+    """ Implementation of Euler's method for solving 1D 1st-order ODEs.
+        Input arguments:
+        (1) f: function to compute derivative at given x, y
+        (2) a: starting point of interval over which we want to solve
+                the ODE
+        (3) b: ending point of the interval
+        (4) N: number of steps to take
+        (5) y0: intial value of y, i.e. y(a)
+        Returns:
+        (1) y: value of y after N steps of Euler method, i.e. y(b)
+    """
     h = (b-a)/float(N)
     xs = a + np.arange(N)*h
     y = y0
@@ -32,18 +31,18 @@ def euler1(f,a,b,N,y0):
     return y
 
 
-""" Implementation of Heun's method for solving 1D 1st-order ODEs.
-    Input arguments:
-      (1) f: function to compute derivative at given x, y
-      (2) a: starting point of interval over which we want to solve
-               the ODE
-      (3) b: ending point of the interval
-      (4) N: number of steps to take
-      (5) y0: intial value of y, i.e. y(a)
-    Returns:
-      (1) y: value of y after N steps of Heun's method, i.e. y(b)
-"""
 def heun1(f,a,b,N,y0):
+    """ Implementation of Heun's method for solving 1D 1st-order ODEs.
+        Input arguments:
+        (1) f: function to compute derivative at given x, y
+        (2) a: starting point of interval over which we want to solve
+                the ODE
+        (3) b: ending point of the interval
+        (4) N: number of steps to take
+        (5) y0: intial value of y, i.e. y(a)
+        Returns:
+        (1) y: value of y after N steps of Heun's method, i.e. y(b)
+    """
     h = (b-a)/float(N)
     xs = a + np.arange(N)*h
     y = y0
@@ -54,19 +53,19 @@ def heun1(f,a,b,N,y0):
     return y
 
 
-""" Implementation of 4th-order Runge-Kutta method for solving 1D 1st-
-      order ODEs.
-    Input arguments:
-      (1) f: function to compute derivative at given x, y
-      (2) a: starting point of interval over which we want to solve
-               the ODE
-      (3) b: ending point of the interval
-      (4) N: number of steps to take
-      (5) y0: intial value of y, i.e. y(a)
-    Returns:
-      (1) y: value of y after N steps of RK4 method, i.e. y(b)
-"""
 def rk4_1(f,a,b,N,y0):
+    """ Implementation of 4th-order Runge-Kutta method for solving 1D 1st-
+        order ODEs.
+        Input arguments:
+        (1) f: function to compute derivative at given x, y
+        (2) a: starting point of interval over which we want to solve
+                the ODE
+        (3) b: ending point of the interval
+        (4) N: number of steps to take
+        (5) y0: intial value of y, i.e. y(a)
+        Returns:
+        (1) y: value of y after N steps of RK4 method, i.e. y(b)
+    """
     h = (b-a)/float(N)
     xs = a + np.arange(N)*h
     y = y0
@@ -81,10 +80,8 @@ def rk4_1(f,a,b,N,y0):
     return y
 
 
-""" By putting our main function inside this if statement, we can safely
-      import the module from other scripts without having this code execute
-      every time
-"""
+# By putting our main function inside this if statement, we can safely import
+#   the module from other scripts without having this code execute every time
 if __name__ == '__main__':
 
     # Set initial quantities
