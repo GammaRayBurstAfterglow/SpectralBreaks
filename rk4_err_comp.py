@@ -76,11 +76,7 @@ def rk4_1(f,a,b,N,y0):
 
     return y
 
-
-# By putting our main function inside this if statement, we can safely import
-#   the module from other scripts without having this code execute every time
-if __name__ == '__main__':
-
+def main():
     # Set initial quantities
     a = 0.0
     b = 20.0
@@ -140,3 +136,9 @@ if __name__ == '__main__':
     ax2.set_ylabel("error scaling")
     
     plt.show()
+
+
+# By putting our main function inside this if statement, we can safely import
+#   the module from other scripts without having this code execute every time
+if __name__ == '__main__':
+    main()
