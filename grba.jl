@@ -1,8 +1,11 @@
 ### A Pluto.jl notebook ###
-# v0.20.3
+# v0.20.4
 
 using Markdown
 using InteractiveUtils
+
+# ╔═╡ 9eb5261b-0172-496e-8b37-af69bda54cc8
+import Pkg; Pkg.activate(Base.current_project())
 
 # ╔═╡ d5fd0104-6162-46b8-b6fb-100020af7f75
 using Unitful, UnitfulAstro
@@ -306,6 +309,7 @@ let f = Figure()
 end
 
 # ╔═╡ Cell order:
+# ╠═9eb5261b-0172-496e-8b37-af69bda54cc8
 # ╠═351f346b-c485-444c-89a9-98ce2b2e61da
 # ╠═2d509ec6-9a55-11ef-32b6-89482b901188
 # ╠═d5fd0104-6162-46b8-b6fb-100020af7f75
