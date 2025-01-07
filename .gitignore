@@ -2,3 +2,5 @@ __pycache__
 *.pyc
 Manifest.toml
 JuliaManifest.toml
+a.out
+a.exe
