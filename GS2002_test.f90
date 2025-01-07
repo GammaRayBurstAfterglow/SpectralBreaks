@@ -3,7 +3,7 @@ module parameters
   integer, parameter :: k_cbm = 0 ! 0 for ISM, 2 for wind-like CBM
   real(kind=8), parameter :: n_cbm = 1.d0  ! Density if k = 0 (#/cm^3)
   real(kind=8), parameter :: A_star = 3.d33 ! Density if k = 2 (#/cm)
-  
+
   real(kind=8), parameter :: E_iso = 1.d52   ! Impulsive energy added
   real(kind=8), parameter :: Gam_coast = 1000 ! E/m for ejecta and also peak
                                              !   Lorentz factor of fireball
@@ -12,25 +12,25 @@ module parameters
                                      !   *after* tobs_start
   real(kind=8), parameter :: tobs_start = 1.d1  ! Start and end times to
   real(kind=8), parameter :: tobs_end   = 1.195d6  !   consider, in Earth frame
-  
+
   integer, parameter :: n_ph  = 640  ! Size of photon energy array
-  
+
     ! Luminosity distance and redshift. Only set one of these, and let
     !   subroutine cosmo_calc handle the other
   real(kind=8) :: dist_lum
   real(kind=8) :: redshift = 1.d0
-  
+
   real(kind=8), parameter :: p_spec = 2.23d0 ! Spectral index of electron
                                             !   distribution before cooling
-  
+
   real(kind=8), parameter :: epse = 0.1d0   ! Fraction of energy in electrons
   real(kind=8), parameter :: epse_bar = (p_spec-2.d0)/(p_spec-1.d0)*epse
                                 ! And a form more convenient for manipulating
-  
+
   real(kind=8), parameter :: epsB0 = 0.01d0 ! Fraction of energy in B fields
-  
+
   logical, parameter :: do_ssa = .true.  ! Calculate synch self-absorption?
-  
+
 end module parameters
 
 module constants
@@ -39,7 +39,7 @@ module constants
   real(kind=8), parameter :: pii = 2.d0*asin(1.d0)
   real(kind=8), parameter :: degtrd = pii/180.0  ! Degrees to radians
   real(kind=8), parameter :: radtdg = 1.0d0/degtrd ! Radians to degrees
-  
+
   real(kind=8), parameter :: xmp = 1.6726218d-24    ! proton mass in grams
   real(kind=8), parameter :: xme = 9.10938291d-28    ! electron mass
   real(kind=8), parameter :: ccgs = 2.99792458d10   ! speed of light (cm/s)
@@ -53,7 +53,7 @@ module constants
   real(kind=8), parameter :: rm_elec = xme*(ccgs**2) ! electron rest mass en. [erg]
   real(kind=8), parameter :: o_o_mec = 1.d0/(xme*ccgs)
   real(kind=8), parameter :: o_o_rme = 1.d0/rm_elec
-  
+
   real(kind=8), parameter :: pc_to_cm = 3.084d18 ! conversion parsec to cm
   real(kind=8), parameter :: ergtev = 6.242d11  ! conversion ergs to eV
   real(kind=8), parameter :: etkev  = 6.242d08  ! conversion ergs to keV
@@ -61,7 +61,7 @@ module constants
   real(kind=8), parameter :: evterg = 1.602d-12 ! conversion eV to ergs
   real(kind=8), parameter :: xkevte = 1.602d-09 ! conversion keV to ergs
   real(kind=8), parameter :: xmevte = 1.602d-06 ! conversion MeV to ergs
-  
+
 end module constants
 
 module data_arrays
@@ -77,14 +77,14 @@ module data_arrays
   ! Data used in photon production
   real(kind=8) :: o_o_sone
   real(kind=8), dimension(0:n_ph) :: syn_F, syn_x
-  
+
   ! State of the afterglow at a particular t_obs
   real(kind=8) :: Gam_LOS, R_LOS, t_LOS
-  
+
   ! Values used in Euler method subroutine
   integer :: em_steps
   real(kind=8), dimension(n_ph) :: em_size_array
-  
+
 end module data_arrays
 
 !****************************************************************************
@@ -119,7 +119,7 @@ interface
     real(kind=8), intent(in) :: r_params(7)
     real(kind=8), intent(out) :: jnu(n_phot), alpha(n_phot)
   end subroutine
-end interface  
+end interface
 
 logical :: fast_cooling
 integer :: i_tm, j_ph, k_chi, l_y, k_x
@@ -140,22 +140,22 @@ real(kind=8), dimension(7) :: r_params
   !   in the loops to follow
   call calc_syn_Fx(syn_F, syn_x)
   o_o_sone = 1.d0 / syn_x(1)
-  
-  
+
+
   ! Fill tobs_array
   t_fac = (tobs_end/tobs_start)**(1.d0/float(n_tobs))
   tobs_array(0) = tobs_start
   do i_tm = 1, n_tobs
     tobs_array(i_tm) = tobs_array(i_tm-1) * t_fac
   enddo
-  
+
   ! Create y_array and chi_array
   call set_y_array(y_array)
   call set_chi_array(chi_array)
   call set_tzero_array(tzero_array)
   call set_phot_en_array(phot_en_array)
-  
-  
+
+
   ! Find whichever of redshift or comoving distance was not specified; must
   !   convert dist_lum to megaparsecs since that's what cosmo_calc expects
   if( ((dist_lum .eq. 0.d0) .and. (redshift .gt. 0.d0)) .or.              &!&
@@ -169,8 +169,8 @@ real(kind=8), dimension(7) :: r_params
     write(*,"(A)") 'Stopping program now'
     stop
   endif
-  
-  
+
+
   ! Pre-compute Psyn_array, which can be reduced to a 3-D array:
   !   (1) nu
   !   (2) Gam0 (conditions at original shock crossing)
@@ -181,19 +181,19 @@ real(kind=8), dimension(7) :: r_params
 !
 !        call compute_Psyn(j_ph, i_tm, k_chi, Psyn)
 !        Psyn_array(j_ph, i_tm, k_chi) = Psyn
-!        
+!
 !      enddo  ! Loop over k_chi
 !    enddo  ! Loop over i_tm
 !    ! Progress printout
 !    if( mod(j_ph, 10) .eq. 0 ) write(*,"(2X,A,I0)") 'j_ph = ',j_ph
 !  enddo  ! Loop over j_ph
-  
-  
+
+
   ! For each t_obs and each (observer-frame) frequency, evaluate Eq (A14).
   !   This is a double integral over y and chi, which we will handle using
   !   the pre-computed y_array and chi_array values and the trapezoid rule.
   do i_tm = 0,-1!0, n_tobs
-    
+
     ! Compute Gam_LOS and R_LOS for this value of t_obs, since they're the
     !   same at every point during the inner loops and there's no need to
     !   waste computation cycles re-computing them
@@ -205,7 +205,7 @@ real(kind=8), dimension(7) :: r_params
     else
       R_LOS = ( R_LOS / A_star )**(1.d0/(4.d0-k_cbm))
     endif
-    
+
     ! Gam_LOS from Eq (A15)
     Gam_LOS = (17.d0-4.d0*k_cbm) * E_iso                                  &!&
              / ( 4.d0**(5.d0-k_cbm) * (4.d0-k_cbm)**(3.d0-k_cbm) * pii    &!&
@@ -214,17 +214,17 @@ real(kind=8), dimension(7) :: r_params
     if( k_cbm .eq. 0 ) then
       Gam_LOS = sqrt(2.d0) * (Gam_LOS / n_cbm)**(0.5d0/(4.d0-k_cbm))
     else
-      Gam_LOS = sqrt(2.d0) * (Gam_LOS / A_star)**(0.5d0/(4.d0-k_cbm))  
+      Gam_LOS = sqrt(2.d0) * (Gam_LOS / A_star)**(0.5d0/(4.d0-k_cbm))
     endif
-    
-    
+
+
     ! Write the identifier for this time step to the output file
     write(800,"(A,I3,A,ES12.3E2)") 'i_tm = ', i_tm, ';  t_obs = ',        &!&
        tobs_array(i_tm)
-    
-    
+
+
     do j_ph = 0, n_ph
-      
+
       ! Outer integral: over y.  We work outside-in, taking advantage of two
       !   approximations.  First, when y = 1 the integrand evaluates to 0 --
       !   emission drops to zero precisely at the rim.  Second, emissivity is
@@ -232,19 +232,19 @@ real(kind=8), dimension(7) :: r_params
       !   at y_array(0) is almost equal to the value at y_array(1)
       y_integral_running = 0.d0
       y_hi = 1.d0
-      
+
       y_integrand_upper = 0.d0
       y_integrand_lower = 0.d0
       do l_y = 24, 1, -1
-        
+
         y_in = y_array(l_y)
         y_lo = y_in
-        
+
         ! Inner integral: over chi.  Again, work outside in.  First point of
         !   evaluation is set by y_in, and we will work all the way down to
         !   chi = 1.
         chi_integral_running = 0.d0
-        
+
         chi_integrand_upper = 0.d0
         chi_integrand_lower = 0.d0
         chi_hi = y_in**(k_cbm-4.d0)
@@ -252,9 +252,9 @@ real(kind=8), dimension(7) :: r_params
         call evaluate_A14_integrand(i_tm, j_ph, 40, y_in, chi_hi,         &!&
            integrand)
         chi_integrand_upper = integrand
-        
+
         do k_chi = count(chi_array .le. chi_hi)-1, 0, -1
-          
+
           ! Evaluate next lower value on chi_array, and use that to update
           !   the running total using the trapezoid rule
           chi_in = chi_array(k_chi)
@@ -262,19 +262,19 @@ real(kind=8), dimension(7) :: r_params
           call evaluate_A14_integrand(i_tm, j_ph, k_chi, y_in, chi_in,    &!&
              integrand)
           chi_integrand_lower = integrand
-          
+
           chi_integral_running = chi_integral_running                     &!&
                                 + 0.5d0 * ( chi_integrand_upper           &!&
                                            + chi_integrand_lower )        &!&
                                         * ( chi_hi - chi_lo )
-          
+
           ! Set up for next pass through loop
           chi_hi = chi_lo
           chi_integrand_upper = chi_integrand_lower
-          
+
         enddo  ! loop over chi values
-        
-        
+
+
         ! Now have y_integrand_lower (= chi_integral_running).  Use that to
         !   update y_integral_running
         y_integrand_lower = chi_integral_running
@@ -282,13 +282,13 @@ real(kind=8), dimension(7) :: r_params
                             + 0.5d0 * ( y_integrand_upper                 &!&
                                        + y_integrand_lower )              &!&
                                     * ( y_hi - y_lo )
-        
+
         ! Set up for next pass through loop
         y_hi = y_lo
         y_integrand_upper = y_integrand_lower
-        
+
       enddo  ! loop over y values
-      
+
       ! With the loop finished, take care of the final y value: 0.  Figure
       !   11 of GPS99 suggests that the integral is flat in this part of the
       !   afterglow, so just reuse the preceding y_integrand value
@@ -296,31 +296,31 @@ real(kind=8), dimension(7) :: r_params
                           + 0.5d0 * ( y_integrand_lower                   &!&
                                      + y_integrand_lower )                &!&
                                   * ( y_hi - y_array(0) )
-      
+
       ! Multiply by the prefactor from GS2002 Eq (A14)
       y_integral_running = y_integral_running                             &!&
                           * 2.d0*(4.d0-k_cbm) * R_LOS**3                  &!&
                           * (1.d0 + redshift) / dist_lum**2
       if( y_integral_running .lt. 1.d-55 ) y_integral_running = 1.d-99
-      
-      
+
+
       ! Write the result to file
       write(800,"(2i4,2es13.3e2,es13.4e2,es13.3e2)") i_tm, j_ph,          &!&
          log10(phot_en_array(j_ph)*ergtev),                               &!&
          log10(phot_en_array(j_ph)/xh),                                   &!&
          log10(y_integral_running * phot_en_array(j_ph)/xh),    &!& nu*Fnu
          log10(y_integral_running * 1.d23)                       ! Fnu (Jy)
-      
+
     enddo  ! loop over photon energies
-    
+
     ! Write a line to explain the columns
     write(800,"(12X,A)") 'log10(eV)    log10(Hz)  log10(nuFnu)   log10(Jy)'
     ! Skip a line before next time step
     write(800,*)
-    
+
     ! Progress meter
     if(mod(i_tm, 5).eq.0) write(*,"(A,I0)") 'i_tm = ',i_tm
-    
+
   enddo  ! loop over observer times
 
 
@@ -352,10 +352,10 @@ real(kind=8), dimension(7) :: r_params
    !   do_ssa parameter.
    !-------------------------------------------------------------------------
   do i_tm = 0, n_tobs
-    
+
     t_d = tobs_array(i_tm) / 86400.d0   ! t_obs in days
-    
-    
+
+
     ! Compute the locations of the nu_m and nu_c breaks using Table 2 of
     !   GS2002.
     if( k_cbm .eq. 0 ) then
@@ -372,49 +372,49 @@ real(kind=8), dimension(7) :: r_params
             * sqrt(E_iso/1.d52) * (A_star*xmp/5.d11)**(-2.d0) * sqrt(t_d)
     endif
 
-    
+
     ! Decide whether we're in fast or slow cooling.  If fast cooling, we will
     !   need to recalculate nu_m and nu_c -- unless k = 2, in which case we
     !   only recalculate nu_m (we assume nu_11 = nu_3)
     ! Note that F_ext quantities are given in units of Jy, not mJy as in
     !   GS2002
     if( nu_m .gt. nu_c ) then
-      
+
       fast_cooling = .true.
-      
+
       if( k_cbm .eq. 0 ) then
-        
+
         nu_m = 3.94d15 * (p_spec - 0.74d0) * sqrt(1.d0+redshift)          &!&
               * epse_bar**2 * sqrt(epsB0) * sqrt(E_iso/1.d52) * t_d**(-1.5d0)
         nu_c = 5.86d12 / sqrt(1.d0+redshift) * epsB0**(-1.5d0) / n_cbm    &!&
               / sqrt(E_iso/1.d52) / sqrt(t_d)
-        
+
         F_ext_c = 2.84d-2 * (1.d0+redshift) * sqrt(epsB0) * sqrt(n_cbm)   &!&
                  * (E_iso/1.d52) * (dist_lum/1.d28)**(-2)
-        
+
         if( do_ssa ) then
-          
+
           nu_ac = 1.12d8 * ( (3.d0*p_spec-1)/(3.d0*p_spec+2) )**1.6d0     &!&
                  * (1.d0+redshift)**(-1.3d0) * epse_bar**(-1.6d0)         &!&
                  * epsB0**(-0.4d0) * n_cbm**0.3d0                         &!&
                  * (E_iso/1.d52)**(-0.1d0) * t_d**0.3d0
           nu_sa = 1.32d10 / sqrt(1.d0+redshift) * epsB0**1.2d0            &!&
                  * n_cbm**1.1d0 * (E_iso/1.d52)**0.7d0 / sqrt(t_d)
-          
+
           F_ext_ac = 5.27d-6 * ( (3.d0*p_spec-1)/(3.d0*p_spec+2) )**2.2d0 &!&
                     * (1.d0+redshift)**(-0.1d0) * epse_bar**(-2.2d0)      &!&
                     * epsB0**(-0.8d0) * n_cbm**0.1d0                      &!&
                     * (E_iso/1.d52)**0.3d0 * t_d**1.1d0                   &!&
                     / (dist_lum/1.d28)**2
-          
+
         endif
-        
+
       else
-        
+
         nu_m = 3.52d15 * (p_spec - 0.31d0) * sqrt(1.d0 + redshift)        &!&
               * epse_bar**2 * sqrt(epsB0) * sqrt(E_iso/1.d52) * t_d**(-1.5d0)
         ! nu_c is same as for slow cooling, for lack of a better option
-        
+
         ! F_ext_c will be same as slow cooling, for lack of better option
         F_ext_c = 8.02d2 * exp(7.02d0 * (p_spec-2.5d0))                   &!&
                  * (1.d0+redshift)**(p_spec + 0.5d0)                      &!&
@@ -424,9 +424,9 @@ real(kind=8), dimension(7) :: r_params
                  * sqrt(E_iso/1.d52)                                      &!&
                  * t_d**(0.5d0 - p_spec)                                  &!&
                  * (dist_lum/1.d28)**(-2)
-        
+
         if( do_ssa ) then
-          
+
           nu_ac = 1.68d8 * ( (3.d0*p_spec-1)/(3.d0*p_spec+2) )**1.6d0     &!&
                  / (1.d0+redshift) * epse_bar**(-1.6d0)                   &!&
                  * epsB0**(-0.4d0) * (A_star*xmp/5.d11)**0.6d0            &!&
@@ -436,148 +436,148 @@ real(kind=8), dimension(7) :: r_params
                  * (1.d0+redshift)**(-0.4d0) / epse_bar * epsB0**0.2d0    &!&
                  * (A_star*xmp/5.d11)**1.2d0 * (E_iso/1.d52)**(-0.4d0)    &!&
                  * t_d**(-0.6d0)
-          
+
           F_ext_ac = 5.27d-6 * ( (3.d0*p_spec-1)/(3.d0*p_spec+2) )**2.2d0 &!&
                     * (1.d0+redshift)**(-0.1d0) * epse_bar**(-2.2d0)      &!&
                     * epsB0**(-0.8d0) * n_cbm**0.1d0                      &!&
                     * (E_iso/1.d52)**0.3d0 * t_d**1.1d0                   &!&
                     / (dist_lum/1.d28)**2
-          
+
         endif
-        
+
       endif
-      
+
     else
-      
+
       fast_cooling = .false.
-      
+
       if( k_cbm .eq. 0 ) then
-        
+
         F_ext_m = 9.93d-3 * (p_spec + 0.14d0) * (1.d0+redshift)           &!&
                  * sqrt(epsB0) * sqrt(n_cbm) * (E_iso/1.d52)              &!&
                  * (dist_lum/1.d28)**(-2)
-        
+
         if( do_ssa ) then
-          
+
           nu_sa = 1.24d9 * ( (p_spec-1)/(3.d0*p_spec+2) )**0.6d0          &!&
                  / (1.d0+redshift) / epse_bar * epsB0**0.2d0              &!&
                  * n_cbm**0.6d0 * (E_iso/1.d52)**0.2d0
-          
+
           F_ext_sa = 6.47d-4 * (p_spec-1)**1.2d0 / (3.d0*p_spec-1)        &!&
                     / (3.d0*p_spec+2)**0.2d0 * sqrt(1.d0+redshift)        &!&
                     / epse_bar * epsB0**0.4d0 * n_cbm**0.7d0              &!&
                     * (E_iso/1.d52)**0.9d0 * sqrt(t_d)                    &!&
                     / (dist_lum/1.d28)**2
-          
+
         endif
-        
+
       else
-        
+
         F_ext_m = 7.69e-2 * (p_spec + 0.12d0) * (1.d0+redshift)**1.5d0    &!&
                  * sqrt(epsB0) * (A_star*xmp/5.d11) * sqrt(E_iso/1.d52)   &!&
                  / sqrt(t_d) * (dist_lum/1.d28)**(-2)
-        
+
         if( do_ssa ) then
-          
+
           nu_sa = 8.31d9 * ( (p_spec-1)/(3.d0*p_spec+2) )**0.6d0          &!&
                  * (1.d0+redshift)**(-0.4d0) / epse_bar * epsB0**0.2d0    &!&
                  * (A_star*xmp/5.d11)**1.2d0 * (E_iso/1.d52)**(-0.4d0)    &!&
                  * t_d**(-0.6d0)
-          
+
           F_ext_sa = 9.19d-3 * (p_spec-1)**1.2d0 / (3.d0*p_spec-1)        &!&
                     / (3.d0*p_spec+2)**0.2d0 * (1.d0+redshift)**1.2d0     &!&
                     / epse_bar * epsB0**0.4d0 * (A_star*xmp/5.d11)**1.4d0 &!&
                     * (E_iso/1.d52)**0.2d0 * t_d**(-0.2d0)                &!&
                     / (dist_lum/1.d28)**2
-          
+
         endif
-        
+
       endif
-      
+
     endif  ! check on fast/slow cooling
-    
-    
+
+
     ! Equation 5 defines F_nu as the product of several terms.  Each of these
     !   terms depends on photon frequency, so place remaining calculations
     !   in a loop over photon energy.
     F_nu(:) = 1.d-99
     do j_ph = 0, n_ph
-      
+
       nu_phot = phot_en_array(j_ph) / xh
-      
+
       if( fast_cooling ) then
-        
+
         if( .not. do_ssa ) then
-          
+
           F11 = (nu_phot/nu_c)**(-0.597d0 * third)                        &!&
                + (nu_phot/nu_c)**(0.597d0 * 0.5d0)
           F11 = F_ext_c / F11**(1.d0/0.597d0)
-          
+
           F9_tilde = 1.d0  +  (nu_phot/nu_m)**( (3.34d0 - 0.82d0*p_spec)  &!&
                                                * (-0.5d0 + 0.5d0*p_spec) )
           F9_tilde = 1.d0 / F9_tilde**(1.d0/(3.34d0 - 0.82d0*p_spec))
-          
+
           F_nu(j_ph) = F11 * F9_tilde
-          
+
         else
-          
+
           F7 = (nu_phot/nu_ac)**(-(1.99d0-4.d-2*p_spec) * 2.d0)           &!&
               + (nu_phot/nu_ac)**(-(1.99d0-4.d-2*p_spec) * 1.375d0)
           F7 = F_ext_ac / F7**(1.d0/(1.99d0-4.d-2*p_spec))
-          
+
           F10_tilde = 1.d0  +  (nu_phot/nu_sa)**( 1.213d0                 &!&
                                                  * (1.375d0 - third) )
           F10_tilde = 1.d0 / F10_tilde**(1.d0/1.213d0)
-          
+
           F11_tilde = 1.d0  +  (nu_phot/nu_c)**( 0.597d0 * (third + 0.5d0) )
           F11_tilde = 1.d0 / F11_tilde**(1.d0/0.597d0)
-          
+
           F9_tilde = 1.d0  +  (nu_phot/nu_m)**( (3.34d0 - 0.82d0*p_spec)  &!&
                                                * (-0.5d0 + 0.5d0*p_spec) )
           F9_tilde = 1.d0 / F9_tilde**(1.d0/(3.34d0 - 0.82d0*p_spec))
-          
+
           F_nu(j_ph) = F7 * F10_tilde * F11_tilde * F9_tilde
-          
+
         endif
-        
+
       else
-        
+
         if( .not. do_ssa ) then
-          
+
           F2 = (nu_phot/nu_m)**( -(1.84d0 - 0.4d0*p_spec)*third )         &!&
               + (nu_phot/nu_m)**( -(1.84d0 - 0.4d0*p_spec)                &!&
                                    * (1.d0-p_spec)*0.5d0 )
           F2 = F_ext_m / F2**( 1.d0/(1.84d0 - 0.4d0*p_spec) )
-          
+
           F3_tilde = 1.d0  +  (nu_phot/nu_c)**( (1.15d0-0.06d0*p_spec)    &!&
                                                * 0.5d0 ) ! (1-p)/2 - (-p/2)
           F3_tilde = 1.d0 / F3_tilde**(1.d0/(1.15d0-0.06d0*p_spec))
-          
+
           F_nu(j_ph) = F2 * F3_tilde
-          
+
         else
-          
+
           F1 = (nu_phot/nu_sa)**(-1.64d0 * 2.d0)                          &!&
               + (nu_phot/nu_sa)**(-1.64d0 * third)
           F1 = F_ext_sa / F1**( 1.d0/1.64d0 )
-          
+
           F2_tilde = 1.d0  +  (nu_phot/nu_m)**( (1.84d0-0.4d0*p_spec)     &!&
                                                * (third - 0.5d0*(1.d0-p_spec)) )
           F2_tilde = 1.d0 / F2_tilde**( 1.d0/(1.84d0 - 0.4d0*p_spec) )
-          
+
           F3_tilde = 1.d0  +  (nu_phot/nu_c)**( (1.15d0-0.06d0*p_spec)    &!&
                                                * 0.5d0 ) ! (1-p)/2 - (-p/2)
           F3_tilde = 1.d0 / F3_tilde**(1.d0/(1.15d0-0.06d0*p_spec))
-          
+
           F_nu(j_ph) = F1 * F2_tilde * F3_tilde
-          
+
         endif
-        
+
       endif
-      
+
     enddo  ! loop over photon_energies
-    
-    
+
+
     ! Now convert F_nu into nu*F_nu, go from Jy to cgs, and write it out
     nuFnu(:) = F_nu(:) * phot_en_array(:) / xh * 1.d-23
     where( F_nu .lt. 1.d-55 ) F_nu = 1.d-99
@@ -595,12 +595,12 @@ real(kind=8), dimension(7) :: r_params
     write(810,"(12X,A)") 'log10(eV)    log10(Hz)   log10(nuFnu)   log10(Jy)'
     ! Skip a line before next time step
     write(810,*)
-    
+
   enddo  ! loop over observer times
    !-------------------------------------------------------------------------
    ! Analytical solution calculated
    !-------------------------------------------------------------------------
-  
+
 
 end program GS2002_test
 
@@ -751,7 +751,7 @@ real(kind=8) :: R_decel, t_decel, Gam_end, R_end, t_end, tzero_start,     &!&
   endif
   R_decel = R_decel**(1.d0/(3.d0-k_cbm))
   t_decel = R_decel/ccgs
-  
+
   ! tzero_end precomputation
   Gam_end = (17.d0 - 4.d0*k_cbm) * E_iso * (ccgs*tobs_end)**(k_cbm-3.d0)  &!&
            / ( 4.d0**(5.d0-k_cbm) * (4.d0-k_cbm)**(3.d0-k_cbm) * pii )
@@ -770,12 +770,12 @@ real(kind=8) :: R_decel, t_decel, Gam_end, R_end, t_end, tzero_start,     &!&
   endif
   R_end = R_end**(1.d0/(3.d0-k_cbm))
   t_end = R_end/ccgs
-  
+
   ! Now actually compute tzero_start & tzero_end
   tzero_start = 0.1d0 * t_decel
   tzero_end   = 2.d0 * t_end
-  
-  
+
+
   ! Set tzero_array values
   t_fac = (tzero_end/tzero_start)**(1.d0/float(n_ph))
   tzero_array(0) = tzero_start
@@ -849,12 +849,12 @@ real(kind=8) :: xnu, xxx_max, xxx, xxx_log, del_xxx, xxx_fac, sum_k, xx1, &!&
 
   ! Set xnu for use in bessik
   xnu = 5.d0/3.d0
-  
+
   ! Initialize syn_x and syn_F
   syn_x(:) = 0.d0
   syn_F(:) = 0.d0
-  
-  
+
+
 !--! Fill syn_x by hand
    !-------------------------------------------------------------------------
   syn_x(0:118) = (/  0.d0,                                                &!&
@@ -873,20 +873,20 @@ real(kind=8) :: xnu, xxx_max, xxx, xxx_log, del_xxx, xxx_fac, sum_k, xx1, &!&
      9.0d+0, 1.0d+1, 1.1d+1, 1.2d+1, 1.3d+1, 1.4d+1, 1.5d+1, 1.6d+1,      &!&
      1.7d+1, 1.8d+1, 1.9d+1, 2.0d+1, 2.1d+1, 2.2d+1, 2.3d+1, 2.4d+1,      &!&
      2.5d+1, 2.6d+1, 2.7d+1, 2.8d+1, 2.9d+1, 3.0d+1 /)
-  
-  
+
+
 !--! Now calculate F(x) at each value of syn_x
    !-------------------------------------------------------------------------
   do j = 1, 117
-    
+
     xxx_max = 30.d0
     xxx     = syn_x(j)
     xxx_log = log10(xxx)
-    
+
     n_xxx   = 200
     del_xxx = (log10(xxx_max) - xxx_log)/real(n_xxx)
     xxx_fac = 10.d0**del_xxx
-    
+
     sum_k = 0.0d00
     xx1   = xxx
     xx    = xx1 / sqrt(xxx_fac)  ! Both of these are initialized so they
@@ -895,21 +895,21 @@ real(kind=8) :: xnu, xxx_max, xxx, xxx_log, del_xxx, xxx_fac, sum_k, xx1, &!&
       xx2 = xx2 * xxx_fac  !  = 10.0**(xxx_log + (i)*del_xxx)
       xx  = xx  * xxx_fac  !  = sqrt(xx1*xx2)
       del = xx2 - xx1
-      
+
 !     ! Modified Bessel function of fractional order
       call bessik(xx, xnu, ri, rk, rip, rkp, 1.d-8)
-      
+
 !     ! Here is the factor accounting for isotropy:
       sum_k = sum_k + sqrt(1.0d00-(xxx/xx)**2)*rk*del
 !     ! Use this if not accounting for isotropy:
 !      sum_k = sum_k + rk*del
       xx1   = xx2
     enddo ! loop over n_xxx
-    
+
     syn_F(j) = xxx*sum_k
-  
+
   enddo
-  
+
   syn_F(118) = 0.d0  ! Set this one by hand at the end
    !-------------------------------------------------------------------------
    ! F(x) calculated
@@ -954,7 +954,7 @@ real(kind=8) :: a, a1, b, c, d, del, del1, delh, dels, e, f, fact, fact2, &!&
 if(x .le. 0.0 .or. xnu .lt. 0.0) then
   write(*,*) 'bad arguments in bessik', x, xnu
   read(*,*)
-endif 
+endif
 
 ! n is the number of downward recurrences of the I's and upward recurrences
 !  of the K's. xmu lies between -1/2 and +1/2
@@ -1046,7 +1046,7 @@ if(x .lt. XMIN) then
   enddo
   if(i .gt. MAXIT) then
     write(*,*) 'bessk series failed to converge'
-    read(*,*) 
+    read(*,*)
   endif
 
   rkmu = sum
@@ -1095,7 +1095,7 @@ else
     rk = 1.0d-150
     return
   endif
-  
+
   rkmu = sqrt(PI/(2.d0*x))*exp(-x)/s  ! Can omit the factor exp(-x) to scale
   rk1  = rkmu*(xmu+x+.5d0-h)*xi       !  all the returned functions by exp(x)
                                       !  for all x .ge. XMIN
@@ -1201,7 +1201,7 @@ real(kind=8) :: d, dd, sv, y, y2
 
 if ((x-a)*(x-b) .gt. 0.0d00) then
   write(*,*) 'x not in range in chebev'; read(*,*)
-endif 
+endif
 
 d  = 0.0d00
 dd = 0.0d00
@@ -1267,7 +1267,7 @@ real(kind=8), dimension(7) :: r_params
   phot_en = phot_en_array(j_ph)
   t_zero  = tzero_array(i_tm)
   chi     = chi_array(k_chi)
-  
+
    !-------------------------------------------------------------------------
 !--! (1) Compute conditions at time fluid element crossed shock
    !-------------------------------------------------------------------------
@@ -1280,15 +1280,15 @@ real(kind=8), dimension(7) :: r_params
   Gam_zero = (17.d0 - 4.d0*k_cbm) * E_iso * (ccgs*t_zero)**(k_cbm-3.d0)   &!&
             / ( 8.d0*pii * n_ext*rm_prot )
   Gam_zero = sqrt(Gam_zero)
-  
+
   n_zero   = sqrt(8.d0) * Gam_zero * n_ext
   e_zero   = 2.d0 * Gam_zero**2 * n_ext*rm_prot
   Bsq_zero = 8.d0*pii * epsB0 * e_zero
    !-------------------------------------------------------------------------
    ! Zero-time conditions found
    !-------------------------------------------------------------------------
-   
-   
+
+
    !-------------------------------------------------------------------------
 !--! (2) Compute gam_min_cool and gam_max_cool
    !-------------------------------------------------------------------------
@@ -1301,12 +1301,12 @@ real(kind=8), dimension(7) :: r_params
   !   upper bound on the electron distribution, corresponding to an electron
   !   with an energy of 3x10^20 eV.
   gam_min_uncool = epse_bar * e_zero / (n_zero * rm_elec)
-  
+
   gam_max_uncool = 6.d14
-  
+
   K_zero = (p_spec - 1.d0) * n_zero * gam_min_uncool**(p_spec-1.d0)
-  
-  
+
+
   ! Cool the electrons
   if( chi .gt. 1.d0 ) then
     gam_max_cool = sqrt(2.d0)*(19.d0-2.d0*k_cbm) * pii * xme*ccgs         &!&
@@ -1331,15 +1331,15 @@ real(kind=8), dimension(7) :: r_params
    !-------------------------------------------------------------------------
    ! gam_min_cool and gam_max_cool found
    !-------------------------------------------------------------------------
-  
-  
+
+
    !-------------------------------------------------------------------------
 !--! (3) Calculate synchrotron production in the plasma frame
    !-------------------------------------------------------------------------
   ! Local magnetic field value
   B_sq = 8.d0*pii * epsB0 * e_zero * chi**(- (26.d0-4.d0*k_cbm)           &!&
                                             /(12.d0-3.d0*k_cbm) )
-  
+
   ! Integrate the emissivity if electron Lorentz factors are high enough
   !   (gamma > 6).  Otherwise return 0
   if( gam_max_cool .lt. 6.d0 ) then
@@ -1355,10 +1355,10 @@ real(kind=8), dimension(7) :: r_params
     r_params(2) = phot_en
     r_params(3) = 3.d0 * qcgs * sqrt(B_sq) / (4.d0*pii * xme*ccgs)
     r_params(4) = gam_max_cool
-    
+
     u_bound = log(gam_max_cool)
     l_bound = log( max( 6.d0, gam_min_cool ) )
-    
+
     call romb_quad( Psyn_integrand, l_bound, u_bound, r_params, i_params, &!&
        Psyn, istat )
   endif
@@ -1406,15 +1406,15 @@ real(kind=8) :: gam_e, Psyn_prefac, phot_en, nu_c_prefac, gam_max,        &!&
   ! We might be integrating in log space, but the function uses gamma_e in
   !   linear space for all its evaluation.  So return it to linear space here
   gam_e = exp(log_gam)
-  
-  
+
+
   ! Read in the data from r_params
   Psyn_prefac = r_params(1)
   phot_en     = r_params(2)
   nu_c_prefac = r_params(3)
   gam_max     = r_params(4)
-  
-  
+
+
   ! Electron distribution is Equation (A13) in Granot & Sari (2002)
   ! Extra factor of gam_in is because dgam = gam*dgam/gam = gam * d(ln[gam]),
   !   and we are integrating in log space.
@@ -1424,8 +1424,8 @@ real(kind=8) :: gam_e, Psyn_prefac, phot_en, nu_c_prefac, gam_max,        &!&
   else
     dist_term = 0.d0
   endif
-  
-  
+
+
   ! The "isotropic" form of syn_F in calc_syn_Fx is within 5% of the correct
   !   value everywhere in the domain of computation, and is typically closer
   !   than 1%.  Use that instead of repeated calls to integrate Equation
@@ -1435,13 +1435,13 @@ real(kind=8) :: gam_e, Psyn_prefac, phot_en, nu_c_prefac, gam_max,        &!&
   !   energy to match phot_en
   !--------------------------------------------------------------------------
   xxx = phot_en / (nu_c_prefac * xh * gam_e**2)
-  
+
   ! At large x, no synchrotron power produced
   if( xxx .ge. 30.d0 ) then
     Psyn_integrand = 1.d-99
     return
   endif
-  
+
   ! Find the appropriate value of syn_x for this photon energy
   do i_x = 0, n_ph-1
     if( syn_x(i_x+1) .ge. xxx ) then
@@ -1449,7 +1449,7 @@ real(kind=8) :: gam_e, Psyn_prefac, phot_en, nu_c_prefac, gam_max,        &!&
       exit
     endif
   enddo
-  
+
   ! Interpolate between values of syn_F to get F(x).  If x < syn_x(1), then
   !   it falls in the power-law part of the function F(x)
   if( xxx .lt. syn_x(1) ) then
@@ -1461,8 +1461,8 @@ real(kind=8) :: gam_e, Psyn_prefac, phot_en, nu_c_prefac, gam_max,        &!&
   endif
   !--------------------------------------------------------------------------
   ! Isotropic synchrotron power found
-  
-  
+
+
   ! Integrand (and so result of this function) is the product of the number
   !   of electrons and power per electron
   Psyn_integrand = Psyn_prefac * dist_term * F_x
@@ -1524,22 +1524,22 @@ real(kind=8) :: s_in, d_int
 real(kind=8), dimension(jmaxp) :: h, s
 integer, dimension(7) :: i_params_int
 real(kind=8), dimension(7) :: r_params_int
-  
+
   h(1) = 1.d0
   s_in = 0.d0 ! Irrelevant since it will be ignored when j = 1 and replaced
               !   immediately thereafter
-  
+
   ! Loop over refinements to the integral, halving the step size at
   !   each cycle
   do j = 1, jmax
-    
+
     i_params_int(:) = i_params(:)
     i_params_int(5) = j  ! 1 = i_tm, 2 = k_ang, 3 = n_step, 4 = m_ph,
                          !   and 5 = j
     r_params_int(:) = r_params(:)
     call trapzd(func, x_start, x_end, r_params_int, i_params_int, s_in, j,&!&
        s(j))
-    
+
     if( j .ge. k_ord ) then
       ! Warning: polint expects arrays for h and s, so what we are
       !   actually passing are sub-arrays of h and s running from element
@@ -1547,7 +1547,7 @@ real(kind=8), dimension(7) :: r_params_int
       call polint(h(j-km), s(j-km), k_ord, 0.d0, integral, d_int)
       if( abs(d_int) .le. (tol * abs(integral)) ) exit
     endif
-    
+
     s_in   = s(j)
     h(j+1) = 0.25d0 * h(j)  ! This is a key step.  The factor is 0.25 even
                             !   though we only decrease our step size by 0.5.
@@ -1555,13 +1555,13 @@ real(kind=8), dimension(7) :: r_params_int
                             !   h^2 rather than h, as allowed by Eq. 4.2.1,
                             !   the Euler-Maclaurin Summation formula.
   enddo
-  
+
   if( j .gt. jmax ) then
     istat = -1
   else
     istat = 1
   endif
-  
+
 return
 end subroutine romb_quad
 
@@ -1615,28 +1615,28 @@ real(kind=8), intent(out) :: s_out
   ! Local variables
 integer :: it, j
 real(kind=8) :: del, x, running_tot
-  
+
   if( n .eq. 1 ) then
-    
+
     s_out = 0.5d0 * (x_end-x_start) * ( func(x_end, r_params, i_params)   &!&
                                        + func(x_start, r_params, i_params) )
-    
+
   else
-    
+
     it  = 2**(n - 2)
     del = (x_end - x_start) / (1.d0*it)
     x   = x_start + 0.5d0*del
     running_tot = 0.d0
-    
+
     do j = 1, it
       running_tot = running_tot  +  func(x, r_params, i_params)
       x = x + del
     enddo
-    
+
     s_out = 0.5d0 * ( s_in  +  del * running_tot )
-    
+
   endif
-  
+
 return
 end subroutine trapzd
 
@@ -1674,10 +1674,10 @@ real(kind=8), intent(out) :: y_out, dy_out
 integer :: ns, i, m
 real(kind=8) :: dif, dift, ho, hp, w, den
 real(kind=8), dimension(n) :: c, d
-  
+
   ns = 1
   dif = abs( x_in - x_array(1) )
-  
+
   ! Find the index ns of the closest table entry and initialize the tableau
   !   of c's and d's
   do i = 1, n
@@ -1686,26 +1686,26 @@ real(kind=8), dimension(n) :: c, d
       ns  = i
       dif = dift
     endif
-    
+
     c(i) = y_array(i)
     d(i) = y_array(i)
   enddo
-  
-  
+
+
   ! The initial approximation to y_out
   y_out = y_array(ns)
-  
-  
+
+
   ! For each column of the tableau, loop over the current c's and d's and
   !   update them
   ns = ns - 1
   do m = 1, n-1
-    
+
     do i = 1, n-m
       ho = x_array(i)   - x_in
       hp = x_array(i+m) - x_in
       w  = c(i+1) - d(i)
-      
+
       den = ho - hp
       ! This error will only occur if two input entries of x_array are
       !   identical to within roundoff error
@@ -1714,14 +1714,14 @@ real(kind=8), dimension(n) :: c, d
         write(*,"(A)") 'Stopping program now'
         stop
       endif
-      
+
       den = w / den
-      
+
       ! Update the c's and d's
       d(i) = hp*den
       c(i) = ho*den
     enddo
-    
+
     ! After each column in the tableau is computed, decide which correction
     !   (c or d) we want to add to our accumulating value of y_out.  That is,
     !   decide whith path to take through the tableau--forking up or down.
@@ -1736,11 +1736,11 @@ real(kind=8), dimension(n) :: c, d
       dy_out = d(ns)
       ns = ns - 1
     endif
-    
+
     y_out = y_out + dy_out
-    
+
   enddo
-  
+
 return
 end subroutine polint
 
@@ -1810,8 +1810,8 @@ real(kind=8) :: t_look, z_save, d_save, d_old, d_new, z_old, E_old, z_new,&!&
                  !       integration for lookback time
                  !   2: d_CM less than critical value. Skip stepping through
                  !       z integral and integration to find t_look
-  
-  
+
+
 !--! Quick error check that at least one input is physically reasonable and
    !   that only one is positive
   if( ((z .le. 0.d0) .and. (d_CM .le. 0.d0)) .or.                         &!&
@@ -1831,52 +1831,52 @@ real(kind=8) :: t_look, z_save, d_save, d_old, d_new, z_old, E_old, z_new,&!&
     ! First, check to make sure d_CM is large enough to get a reasonable
     !  redshift -- otherwise return zero
     .and. (d_CM .lt. 0.443d0) ) then
-    
+
     z      = 0.d0
     t_look = d_CM * 3.2616d6 ! convert Mpc to years
     code_stat = 2 ! d_CM less than critical value. Skip stepping through
                     !  z integral and integration to find t_look
-  
-  
+
+
   ! d_CM was a reasonable value
   else if( (z .eq. 0.d0) .and. (d_CM .gt. 0.d0) ) then
-  
+
     d_old = 0.d0
     d_new = 0.d0
     z_old = 0.d0
-    E_old = 1.d0 ! E(z) = sqrt[Omega_r*(1+z)^4 + Omega_m*(1+z)^3 
+    E_old = 1.d0 ! E(z) = sqrt[Omega_r*(1+z)^4 + Omega_m*(1+z)^3
                  !           + Omega_k*(1+z)^2 + Omega_vac]
                  !  Equation (13) in Hogg (1999)
-  
-    
+
+
     do i = 1, 100
       z_new = 1.d-4 * real(i)
       E_new = sqrt( Omega_r*(1+z_new)**4                  &!& Equation (13)
                    + Omega_m*(1+z_new)**3                 &!&  in Hogg (1999)
                    + Omega_vac)
-      
+
       ! Use Equation (14) in Hogg (1999) to update d_new
       d_new  = d_new  +  d_H*1.d-4 * 0.5d0*(1.d0/E_old + 1.d0/E_new)
-      
+
       ! If current step in z exceeded provided value of d_CM, perform linear
       !  interpolation between the d_old and d_new
       if( (d_old .lt. d_CM) .and. (d_new .ge. d_CM) ) then
-        
+
         slope = (d_new - d_old) / (z_new - z_old)
         z = (d_CM - d_old) / slope  +  z_old
         code_stat = 1 ! value of z for provided d_CM located. Proceed to
                       !  integration for lookback time
         exit
-        
+
       endif
-      
+
       ! Set variables for next pass through loop
       d_old = d_new
       E_old = E_new
       z_old = z_new
     enddo
-    
-    
+
+
     ! If a value of z wasn't already found stepping from z = 0 to 0.01 with
     !   steps of size 1.d-4, start stepping up from z = 0.01 with steps of
     !   size 0.01
@@ -1887,37 +1887,37 @@ real(kind=8) :: t_look, z_save, d_save, d_old, d_new, z_old, E_old, z_new,&!&
       E_new = sqrt( Omega_r*(1+z_new)**4                  &!& Equation (13)
                    + Omega_m*(1+z_new)**3                 &!&  in Hogg (1999)
                    + Omega_vac)
-      
+
       ! Use Equation (14) in Hogg (1999) to update d_new
       d_new  = d_new  +  d_H*1.d-2 * 0.5d0*(1.d0/E_old + 1.d0/E_new)
-      
+
       ! If current step in z exceeded provided value of d_CM, perform linear
       !  interpolation between the d_old and d_new
       if( (d_old .lt. d_CM) .and. (d_new .ge. d_CM) ) then
-        
+
         slope = (d_new - d_old) / (z_new - z_old)
         z = (d_CM - d_old) / slope  +  z_old
         code_stat = 1 ! value of z for provided d_CM located. Proceed to
                       !  integration for lookback time
         exit
-        
+
       endif
-      
+
       ! Set variables for next pass through loop
       d_old = d_new
       E_old = E_new
       z_old = z_new
-      
-      
+
+
       ! Quick and dirty error check
       if( i .gt. 1000) then
         write(*,"(A,F5.2)") "z_new exceeds reasonable bounds: ",z_new
         write(*,"(A)") "Stopping program"
         stop
       endif
-      
+
     enddo
-    
+
   endif
    !-------------------------------------------------------------------------
    ! End calculation of z for a provided d_CM
@@ -1929,39 +1929,39 @@ real(kind=8) :: t_look, z_save, d_save, d_old, d_new, z_old, E_old, z_new,&!&
    !   and Equations (28) in Hogg (1999).
    !-------------------------------------------------------------------------
   if( ((z .gt. 0.d0).and.(d_CM .eq. 0.d0)) .or. (code_stat .eq. 1) ) then
-    
+
     t_look = 0.d0
     z_old = 0.d0
     E_old = 1.d0 ! E(z) = sqrt[Omega_m*(1+z)^3 + Omega_r*(1+z)^2 + Omega_vac]
                  !  Equation (13) in Hogg (1999)
-  
-    
+
+
     do i = 1, num_steps
       z_new = z*real(i)/num_steps
       E_new = sqrt( Omega_r*(1+z_new)**4                  &!& Equation (13)
                    + Omega_m*(1+z_new)**3                 &!&  in Hogg (1999)
                    + Omega_vac)
-  
-      
+
+
       ! If d_CM wasn't provided, use Equation (14) in Hogg (1999) to update
       !  running total
       if( code_stat .lt. 1 )  d_CM = d_CM  +  0.5d0*(1.d0/E_old + 1.d0/E_new)
-      
+
       ! Independently of previous calculation, use Equation (28) in Hogg
       !   (1999) to update t_look
       t_look = t_look  +  0.5d0 * (  1.d0/((1+z_old)*E_old)               &!&
                                    + 1.d0/((1+z_new)*E_new) )
-      
+
       ! Set variables for next pass through loop
       z_old = z_new
       E_old = E_new
     enddo
-    
+
     ! Finally, multiply by appropriate scale factors out front and width of
     !  the trapezoids used for integration
     if( code_stat .lt. 1 )  d_CM = d_H * z/real(num_steps) * d_CM
     t_look = t_H * z/real(num_steps) * t_look
-  
+
   endif
    !-------------------------------------------------------------------------
    ! End calculation of t_look, and possibly also d_CM
@@ -2007,7 +2007,7 @@ integer, intent(in) :: i_tm, j_ph, k_chi
 real(kind=8), intent(in) :: y_in, chi_in
   ! Output arguments
 real(kind=8), intent(out) :: integrand
-  
+
   ! Local variables
 integer :: i_tm_lo, j_ph_lo
 real(kind=8) :: t_obs, phot_en_obs, R_zero, t_zero, mu, Gam_emis,         &!&
@@ -2017,7 +2017,7 @@ real(kind=8) :: t_obs, phot_en_obs, R_zero, t_zero, mu, Gam_emis,         &!&
   ! Convert array indices to values
   t_obs = tobs_array(i_tm)
   phot_en_obs = phot_en_array(j_ph)
-  
+
    !-------------------------------------------------------------------------
 !--! In order to evaluate Psyn, we need to find (1) initial shock conditions
    !   associated with this t_obs/y/chi, and (2) the local plasma frame
@@ -2029,15 +2029,15 @@ real(kind=8) :: t_obs, phot_en_obs, R_zero, t_zero, mu, Gam_emis,         &!&
   !      R_0 = c*t_0
   R_zero = R_LOS*y_in / chi_in**(1.d0/(4.d0-k_cbm))
   t_zero = R_zero / ccgs
-  
+
   ! mu from Eq (A16)
   mu = 1.d0  -  (1.d0 - chi_in*y_in**(4.d0-k_cbm))                        &!&
                / ( 2.d0*(4.d0-k_cbm) * Gam_LOS**2 * y_in )
-  
+
   ! little_gam from Eq (A9)
   Gam_emis = Gam_LOS * y_in**(0.5d0*(k_cbm-3.d0))
   little_gam = Gam_emis / sqrt( 2.d0 * chi_in )
-  
+
   ! If we are far enough from the shock, the BM solution breaks down and
   !   allows for little_gam < 1.  Should that occur simply exit the
   !   subroutine and return zero emission
@@ -2045,7 +2045,7 @@ real(kind=8) :: t_obs, phot_en_obs, R_zero, t_zero, mu, Gam_emis,         &!&
     integrand = 1.d-99
     return
   endif
-  
+
   ! Compute the local photon energy of interest using the Doppler factor
   beta = sqrt( 1.d0 - little_gam**(-2) )
   phot_en_pf = phot_en_obs * little_gam * ( 1.d0 - beta*mu )              &!&
@@ -2053,8 +2053,8 @@ real(kind=8) :: t_obs, phot_en_obs, R_zero, t_zero, mu, Gam_emis,         &!&
    !-------------------------------------------------------------------------
    ! t_zero and phot_en_pf computed
    !-------------------------------------------------------------------------
-   
-   
+
+
    !-------------------------------------------------------------------------
 !--! Use t_zero and phot_en_pf to locate this point in the precomputed
    !   Psyn_array.  If the point does not fall within the bounds of
@@ -2074,7 +2074,7 @@ real(kind=8) :: t_obs, phot_en_obs, R_zero, t_zero, mu, Gam_emis,         &!&
     write(*,"(A)") 'Stopping program now'
     stop
   endif
-  
+
   j_ph_lo = count( phot_en_array .le. phot_en_pf ) - 1
   if( (j_ph_lo .lt. 0) .or. (j_ph_lo .ge. n_ph) ) then
     integrand = 1.d-99
@@ -2093,8 +2093,8 @@ real(kind=8) :: t_obs, phot_en_obs, R_zero, t_zero, mu, Gam_emis,         &!&
    !-------------------------------------------------------------------------
    ! Point located
    !-------------------------------------------------------------------------
-  
-  
+
+
    !-------------------------------------------------------------------------
 !--! Perform the bilinear interpolation within Psyn_array.  It is not tri-
    !   linear interpolation because chi is guaranteed to be one of the index
@@ -2104,15 +2104,15 @@ real(kind=8) :: t_obs, phot_en_obs, R_zero, t_zero, mu, Gam_emis,         &!&
   Psyn_lh = Psyn_array(j_ph_lo,   i_tm_lo+1, k_chi)
   Psyn_hl = Psyn_array(j_ph_lo+1, i_tm_lo,   k_chi)
   Psyn_hh = Psyn_array(j_ph_lo+1, i_tm_lo+1, k_chi)
-  
+
   tzero_denom   = 1.d0 / (tzero_array(i_tm_lo+1) - tzero_array(i_tm_lo))
   phot_en_denom = 1.d0 / (phot_en_array(j_ph_lo+1) - phot_en_array(j_ph_lo))
-  
+
   Psyn_l =  (tzero_array(i_tm_lo+1) - t_zero) * tzero_denom * Psyn_ll     &!&
           + (t_zero - tzero_array(i_tm_lo))   * tzero_denom * Psyn_lh
   Psyn_h =  (tzero_array(i_tm_lo+1) - t_zero) * tzero_denom * Psyn_hl     &!&
           + (t_zero - tzero_array(i_tm_lo))   * tzero_denom * Psyn_hh
-  
+
   Psyn_int =  (phot_en_array(j_ph_lo+1) - phot_en_pf)                     &!&
                                                * phot_en_denom * Psyn_l   &!&
             + (phot_en_pf - phot_en_array(j_ph_lo))                       &!&
@@ -2120,8 +2120,8 @@ real(kind=8) :: t_obs, phot_en_obs, R_zero, t_zero, mu, Gam_emis,         &!&
    !-------------------------------------------------------------------------
    ! Interpolation complete
    !-------------------------------------------------------------------------
-   
-   
+
+
    !-------------------------------------------------------------------------
 !--! Combine everything into the integrand of Eq (A14) and return that as the
    !   output of the subroutine
@@ -2132,7 +2132,7 @@ real(kind=8) :: t_obs, phot_en_obs, R_zero, t_zero, mu, Gam_emis,         &!&
    !-------------------------------------------------------------------------
    ! Integrand computed
    !-------------------------------------------------------------------------
-   
+
 return
 end subroutine evaluate_A14_integrand
 
@@ -2199,13 +2199,13 @@ real(kind=8) :: x_lo, y_lo, x_hi, y_hi, x_mid, y_mid
     x_root = x_hi
     return
   endif
-  
+
   do i = 1, max_itrs
-    
+
     ! Compute the value of f at the midpoint between x_lo and x_hi
     x_mid = 0.5d0 * (x_lo + x_hi)
     y_mid = func_name(x_mid, i_params, r_params)
-    
+
     ! If f(x_mid) is exactly zero, we've found the root.  Otherwise,
     !  If f(x_lo) has same sign as f(x_mid) then x_mid replaces x_lo.
     !  If f(x_hi) has same sign as f(x_mid) then x_mid replaces x_hi.
@@ -2219,9 +2219,9 @@ real(kind=8) :: x_lo, y_lo, x_hi, y_hi, x_mid, y_mid
         x_lo = x_mid
       endif
     endif
-    
+
   enddo
-  
+
   x_root = x_mid
 
 return
@@ -2284,8 +2284,8 @@ real(kind=8), dimension(7), intent(in) :: r_params
   ! Local variables
 integer :: isign
 real(kind=8) :: r, mu, Gam_axis, Gam_emis, chiy
-  
-  
+
+
   select case( i_params(1) )
     case( 1 )  ! The typical use case: inside the egg
       r        = r_params(1)
@@ -2311,7 +2311,7 @@ real(kind=8) :: r, mu, Gam_axis, Gam_emis, chiy
       write(*,"(A)") 'Stopping program now'
       stop
   end select
-  
+
   GPS_egg = 2.d0*(4.d0-k_cbm)*(Gam_axis**2)*y_input*(1.d0 - mu)           &!&
            +  chiy*y_input**(3.d0-k_cbm)  -  1.d0
 
