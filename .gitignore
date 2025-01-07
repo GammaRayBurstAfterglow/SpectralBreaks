@@ -4,3 +4,6 @@ Manifest.toml
 JuliaManifest.toml
 a.out
 a.exe
+*.mod
+*.exe
+*.obj
