@@ -7,59 +7,58 @@ using InteractiveUtils
 # ╔═╡ 9eb5261b-0172-496e-8b37-af69bda54cc8
 import Pkg; Pkg.activate(Base.current_project())
 
+# ╔═╡ bd1923a0-88e2-4817-bf58-ef4a0ebe3acf
+using PlutoUI
+
 # ╔═╡ d5fd0104-6162-46b8-b6fb-100020af7f75
-using Unitful, UnitfulAstro
-
-# ╔═╡ 97da13b3-d291-49ee-a268-875a3cdecada
-using Unitful: Hz
-
-# ╔═╡ dd5cb545-3048-4993-bd24-9d38c88be075
-using Unitful: cm
-
-# ╔═╡ 7e05b5f6-d169-41df-bc6b-87af579cbe6e
-using UnitfulAstro: foe
-
-# ╔═╡ cb42ae83-105f-4179-b136-050494455469
-using UnitfulAstro: Mpc
+begin
+    using Unitful, UnitfulAstro
+    using Unitful: Hz, cm
+    using UnitfulAstro: foe, Mpc, mJy
+end
 
 # ╔═╡ 97dabced-9b4f-48a6-83ca-3335b7cf0244
 using CairoMakie
 
 # ╔═╡ 351f346b-c485-444c-89a9-98ce2b2e61da
-# k = 0, 2
+# k = 0 # ISM
+# k = 2 # preexplosion wind
 
 # ╔═╡ 2d509ec6-9a55-11ef-32b6-89482b901188
-#bs = [1, 2, 3, 7, 9, 10, 11]
+#bs = [1, 2, 3, 7, 9, 10, 11] # break indices
+
+# ╔═╡ 3a706715-c616-4ae6-ac1c-b3e85929c1ca
+TableOfContents()
 
 # ╔═╡ 847d415c-a451-425f-ba7e-ee0efa2610dd
-νs = logrange(1e6, 2.418e26, length = 100)Hz
+const νs = logrange(1e6, 2.418e26, length = 100) * Hz
 
 # ╔═╡ a5c2a77b-c7db-4557-81d7-8ac806ebef9a
-p = 2.23; # spectral index of electron distribution
+const p = 2.23; # spectral index of electron distribution
 
 # ╔═╡ 30bc52fb-f137-4233-bd4c-670cd0b58801
-z = 1; # cosmological red shift
+const z = 1; # cosmological red shift
 
 # ╔═╡ 560fb21a-d217-4239-9ae2-d8407206db51
-ε_e = 0.1; # fraction of total energy density in electrons
+const εₑ = 0.1; # fraction of total energy density in electrons
 
 # ╔═╡ e2dccbdd-c399-476a-9e67-6ed871c8d67e
-ε_e_bar = (ε_e * (p - 2)) / (p - 1)
+const ε̄ₑ = εₑ * (p - 2) / (p - 1)
 
 # ╔═╡ df809df0-0c87-45d0-8425-8e63a16afa15
-ε_B = 0.01 # fraction of total energy in magnetic field
+const ε_B = 0.01 # fraction of total energy in magnetic field
 
 # ╔═╡ 385f3c85-2e23-4a01-bfba-d2fdf3f7b4a4
-ε = 1 - (ε_e + ε_B)
+const ε = 1 - (εₑ + ε_B)
 
 # ╔═╡ 22b7badb-3c4b-425a-a4ff-4faf5896a989
-n_0 = 1#/cm^3 # ambient particle density
+const n₀ = 1#/cm^3 # ambient particle density
 
 # ╔═╡ f98dfbee-f09e-4987-83d2-60cc9f51aaeb
-E = 10foe
+const E = 10foe
 
 # ╔═╡ 624292cc-9705-4654-8d3b-1ad1b6b88d7f
-E_52 = E / 10foe
+const E_52 = E / 10foe
 
 # ╔═╡ 43a5597d-acac-472b-8a6e-b803201ae62a
 #A_⋆ = []
@@ -74,185 +73,271 @@ t_days = [
 ] # time since gamma ray burst, in days (maybe add units?)
 
 # ╔═╡ 093c21fa-d06c-4607-ac7b-f3b1e8c04139
-d = 6787.5Mpc |> cm
+d_L = 6787.5Mpc # luminosity distance
 
 # ╔═╡ 75403e1f-db0a-4c17-ade2-69870f55f7d0
-d_L28 = d / 1e28cm
+d_L28 = d_L / 1e28cm |> NoUnits
 
 # ╔═╡ 427af236-899a-4772-8a12-e8f8320e34d2
-function breakcase(b, t, ν)
+function breakcase(b::Integer, t, ν)
     # runtime dispatch instead of compile-time dispatch
     if b in (1, 2, 3, 7, 9, 10, 11)
-        return breakcase(Val(b), t, ν)
+        return breakcase(Val(Int(b)), t, ν)
     else
-        error("Invalid value for b")
+        throw(ArgumentError("Invalid value for b"))
     end
+end
+
+# ╔═╡ 517fb628-3b62-4ab0-a749-72a091744ed8
+md"""
+Scaled frequency near the break:
+```math
+ϕ_b = \frac{ν}{ν_b}
+```
+"""
+
+# ╔═╡ 05799234-827a-4b1c-af3f-c5eec598cbae
+md"""
+All assumes
+```math
+k = 0
+```
+"""
+
+# ╔═╡ 9830bc40-d236-4629-81f4-899b308ee792
+md"""
+## _b_ = 1
+"""
+
+# ╔═╡ b201cfeb-bc38-4ab9-bf88-eafd9a9d5f3a
+const ν₁ = let
+    # Dummy variables for calculating ν_b
+    var1 = (p-1)^(3//5) / (3p+2)^(3//5)
+    var2 = 1/(1+z)
+    var3 = 1/ε̄ₑ
+    var4 = ε_B^(1//5) * n₀^(3//5) * E_52^(1//5)
+
+    1.24e9Hz * var1 * var2 * var3 * var4
 end
 
 # ╔═╡ 618fd47f-5c56-4914-b92a-66b14b64fe5a
 function breakcase(b::Val{1}, t, ν)
     k = 0
-    β_1 = 2
-    β_2 = 1//3
+    β₁ = 2
+    β₂ = 1//3
     s = 1.64
     # ν_b = ν_sa
     # ν_sa is the self absorption frequency
 
-    # Dummy variables for calculating ν_b
-    var1 = (p-1)^(3//5) / (3p+2)^(3//5)
-    var2 = 1/(1+z)
-    var3 = 1/ε_e_bar
-    var4 = ε_B^(1//5) * n_0^(3//5) * E_52^(1//5)
-
-    ν_1 = 1.24e9Hz * var1 * var2 * var3 * var4
-
     varext1 = (p-1)^(6//5) / ((3p-1) * (3p+2)^(1//5))
     varext2 = √(1+z)
-    varext3 = 1/ε_e_bar
-    varext4 = ε_B^(2//5) * n_0^(7//10) * E_52^(9//10)
+    varext3 = 1/ε̄ₑ
+    varext4 = ε_B^(2//5) * n₀^(7//10) * E_52^(9//10)
     varext5 = √t
     varext6 = 1/d_L28^2
 
-    ν_1_ext = 0.647Hz * varext1 * varext2 * varext3 * varext4 * varext5 * varext6
+    ν_1_ext = 0.647mJy * varext1 * varext2 * varext3 * varext4 * varext5 * varext6
 
-    F_ν_1 = ν_1_ext / ((ν/ν_1).^(-s*β_1) + (ν/ν_1).^(-s*β_2))^(1/s)
+    φ₁ = ν / ν₁
 
-    return ustrip(Hz, F_ν_1)
+    F_ν_1 = ν_1_ext / (φ₁^(-s*β₁) + φ₁^(-s*β₂))^(1/s)
+
+    return ustrip(mJy, F_ν_1)
 end
+
+# ╔═╡ 2a69d85c-46d2-41d8-85a3-63e051b4a52e
+md"""
+## _b_ = 2
+"""
+
+# ╔═╡ fc817333-6a62-44a8-a6a3-5d9f90fc860f
+
 
 # ╔═╡ e41c8512-f0f0-4730-a337-00247adf65a6
 function breakcase(b::Val{2}, t, ν)
     k = 0
-    β_1 = 1//3
-    β_2 = (1-p)/2
+    β₁ = 1//3
+    β₂ = (1-p)/2
     s = 1.84 - 0.4p
     # ν_b == ν_m
-    # ν_b being the peak frequency, thus ν_2 should be larger than ν_1 and ν_3
+    # ν_b being the peak frequency, thus ν₂ should be larger than ν₁ and ν₃
 
-    var1 = (p - 0.67) * 1e15
+    var1 = (p - 0.67)
     var2 = √(1+z)
     var3 = √E_52
     var4 = ε^2
     var5 = √ε_B
     var6 = t^(-3/2)
 
-    ν_2 = 3.73Hz * var1 * var2 * var3 * var4 * var5 * var6
+    ν₂ = 3.73e15Hz * var1 * var2 * var3 * var4 * var5 * var6
 
-    F̃_2 = (1 + (ν/ν_2)^(s*(β_1 - β_2)))^(-1/s)
+    φ₂ = ν / ν₂
+
+    F̃_2 = (1 + φ₂^(s*(β₁ - β₂)))^(-1/s)
 
     return F̃_2
 end
 
+# ╔═╡ 9c6eaf0f-069d-4726-8e33-c4f34f878b80
+md"""
+## _b_ = 3
+"""
+
 # ╔═╡ c95bd4ea-c81c-49a3-a13d-b5ea65b3eaa9
 function breakcase(b::Val{3}, t, ν)
     k = 0
-    β_1 = (1-p)/2
-    β_2 = -p/2
+    β₁ = (1-p)/2
+    β₂ = -p/2
     s = 1.15 - 0.06p
 
     var1 = (p - 0.46) * 1e13
     var2 = exp(-1.16p)
     var3 = 1/√(1+z)
     var4 = ε_B^(-3/2)
-    var5 = 1/n_0
+    var5 = 1/n₀
     var6 = 1/√E_52
     var7 = 1/√t
 
-    ν_3 = 6.37Hz * var1 * var2 * var3 * var4 * var5 * var6 * var7
+    ν₃ = 6.37Hz * var1 * var2 * var3 * var4 * var5 * var6 * var7
 
-    F̃_3 = (1 .+ (ν/ν_3).^(s*(β_1-β_2))).^(-1/s)
+    φ₃ = ν / ν₃
+
+    F̃_3 = (1 + φ₃^(s * (β₁ - β₂)))^(-1/s)
 
     return F̃_3
 end
 
+# ╔═╡ 3bb51235-3d7c-4325-b463-92eab1e86e8e
+md"""
+## _b_ = 4
+"""
+
+# ╔═╡ 80681bd5-2101-4f4c-aa25-f3752a41e606
+function breakcase(b::Val{4}, t, ν)
+end
+
+# ╔═╡ df8b59f8-507f-49fa-8825-95f6ee8aefd7
+md"""
+## _b_ = 7
+"""
+
+# ╔═╡ d9d18dfe-fdc3-41c1-a75c-190fb86830f4
+
+
 # ╔═╡ a2c10f53-b999-42c9-abc2-fa876db201b1
 function breakcase(b::Val{7}, t, ν)
     k = 0
-    β_1 = 2
-    β_2 = 11//8
+    β₁ = 2
+    β₂ = 11//8
     s = 1.9 - 0.04p
 
     var1 = ((3p-1)/(3p+2))^(8//5)
     var2 = 1/(1+z)^(13//10)
-    var3 = ε_e_bar^(-8//5)
+    var3 = ε̄ₑ^(-8//5)
     var4 = ε_B^(-2//5)
-    var5 = (n_0^3 * t^3 / E_52)^(1//10)
+    var5 = (n₀^3 * t^3 / E_52)^(1//10)
 
-    ν_7 = 1.12e8Hz * var1 * var2 * var3 * var4 * var5
+    ν₇ = 1.12e8Hz * var1 * var2 * var3 * var4 * var5
 
     varext1 = ((3p-1)/(3p+2))^(11//5)
     varext2 = 1/(1+z)^(1//10)
-    varext3 = (ε_e_bar * ε_B)^(-4//5)
-    varext4 = (n_0 * E_52^3 * t^11)^(1//10)
+    varext3 = (ε̄ₑ * ε_B)^(-4//5)
+    varext4 = (n₀ * E_52^3 * t^11)^(1//10)
     varext5 = 1 / d_L28^2
 
     ν_7_ext = 5.27e-3Hz * varext1 * varext2 * varext3 * varext4 * varext5
 
-    F_ν_7 = ν_7_ext ./ .√((ν/ν_7).^(-s*β_1) .* (ν/ν_7)^(-s*β_2))
+    φ₇ = ν / ν₇
+
+    F_ν_7 = ν_7_ext / √(φ₇^(-s*β₁) * φ₇^(-s*β₂))
 
     return ustrip(Hz, F_ν_7)
 end
 
+# ╔═╡ 4f7e0c99-84d4-41f2-8a0c-e76018c5cff5
+md"""
+## _b_ = 9
+"""
+
 # ╔═╡ 3d66b17b-fc2a-41d8-a76a-2e40bfb8f020
 function breakcase(b::Val{9}, t, ν)
     k = 0
-    β_1 = -1//2
-    β_2 = -p/2
+    β₁ = -1//2
+    β₂ = -p/2
     s = 3.34 - 0.82p
 
     var1 = p - 0.74
     var2 = √(1+z)
-    var3 = ε_e_bar^2
+    var3 = ε̄ₑ^2
     var4 = √ε_B
     var5 = √E_52
     var6 = t^(-3//2)
 
     ν_9 = 3.94e15Hz * var1 * var2 * var3 * var4 * var5 * var6
 
-    F̃_9 = (1 .+ (ν/ν_9)^(s*(β_1 - β_2)))^(-1/s)
+    F̃_9 = (1 + (ν/ν_9)^(s*(β₁ - β₂)))^(-1/s)
 
     return F̃_9
 end
 
+# ╔═╡ 260bbde7-5048-4eaa-a216-e3c10181c200
+md"""
+## _b_ = 10
+"""
+
 # ╔═╡ 3dc43aca-7621-4905-9df7-f43a88221016
 function breakcase(b::Val{10}, t, ν)
     k = 0
-    β_1 = 11//8
-    β_2 = 1//3
+    β₁ = 11//8
+    β₂ = 1//3
     s = 1.213
 
     var1 = 1/√(1+z)
     var2 = ε_B^(6//5)
-    var3 = 1//n_0
+    var3 = 1//n₀
     var4 = E_52^(7//10)
     var5 = t^(-1/2)
 
-    ν_10 = 1.32e10Hz * var1 * var2 * var3 * var4 * var5
+    ν₁₀ = 1.32e10Hz * var1 * var2 * var3 * var4 * var5
 
-    F̃_10 = (1 .+ (ν/ν_10).^(s*(β_1 - β_2))).^(-1/s)
+    φ₁₀ = ν / ν₁₀
+
+    F̃_10 = (1 + φ₁₀^(s * (β₁ - β₂)))^(-1/s)
 
     return F̃_10
 end
 
+# ╔═╡ ff4ae5ec-adc2-478d-9004-0cf18d2a6432
+md"""
+## _b_ = 11
+"""
+
 # ╔═╡ dfa2cebc-7aaf-4539-9f13-07ce060e606e
 function breakcase(b::Val{11}, t, ν)
     k = 0
-    β_1 = 1//3
-    β_2 = -1//2
+    β₁ = 1//3
+    β₂ = -1//2
     s = 0.597
 
     var1 = 1/√(1+z)
     var2 = ε_B^(-3//2)
-    var3 = 1/n_0
+    var3 = 1/n₀
     var4 = 1/√E_52
     var5 = 1/√t
 
-    ν_11 = 5.86e12Hz * var1 * var2 * var3 * var4 * var5
+    ν₁₁ = 5.86e12Hz * var1 * var2 * var3 * var4 * var5
 
-    F̃_11 = (1 .+ (ν/ν_11)^(s^(β_1 - β_2)))^(-1/s)
+    φ₁₁ = ν / ν₁₁
+
+    F̃_11 = (1 + φ₁₁^(s^(β₁ - β₂)))^(-1/s)
 
     return F̃_11
 end
+
+# ╔═╡ c02be8d3-e472-4073-9a1f-bf53f33e6558
+md"""
+## Plots
+"""
 
 # ╔═╡ c73abcf4-4e6b-4fae-bd2e-b34a2d3de4f4
 log_F5, log_F9 = let
@@ -284,7 +369,7 @@ end
 
 # ╔═╡ cb1d558d-b7ed-49fd-b64d-36a631b871e5
 let f = Figure()
-    ax = Axis(f[1,1], xlabel = "log10(ν)", ylabel = "log10(F₅)")
+    ax = Axis(f[1,1], xlabel = "log10(ν / Hz)", ylabel = "log10(F₅)")
 
     for (F, t) in zip(eachcol(log_F5), t_days)
         lines!(ax, log10.(νs/Hz), F, label = "t = $t days")
@@ -308,12 +393,43 @@ let f = Figure()
     f
 end
 
+# ╔═╡ 9dc9f11e-9a61-4509-86ad-af5cddc98f66
+md"""
+## Break shape function
+"""
+
+# ╔═╡ 53c6305a-860d-410b-b659-ba473d3c8403
+begin
+    s(k::Integer, b::Integer, p::Real) = s(Val(Int(k)), Val(Int(b)), p)
+    s(::Val{0}, ::Val{1}, p::Real) = 1.64
+    s(::Val{0}, ::Val{2}, p::Real) = 1.84 - 0.4p
+    s(::Val{0}, ::Val{3}, p::Real) = 1.15 - 0.06p
+    s(::Val{0}, ::Val{4}, p::Real) = 3.44p - 1.41
+    s(::Val{0}, ::Val{5}, p::Real) = 1.47 - 0.21p
+    s(::Val{0}, ::Val{6}, p::Real) = 0.94 - 0.14p
+    s(::Val{0}, ::Val{7}, p::Real) = 1.99 - 0.04p
+    s(::Val{0}, ::Val{8}, p::Real) = 0.907
+    s(::Val{0}, ::Val{9}, p::Real) = 3.34 - 0.82p
+    s(::Val{0}, ::Val{10}, p::Real) = 1.213
+    s(::Val{0}, ::Val{11}, p::Real) = 0.597
+    s(::Val{2}, ::Val{1}, p::Real) = 1.06
+    s(::Val{2}, ::Val{2}, p::Real) = 1.76 - 0.38p
+    s(::Val{2}, ::Val{3}, p::Real) = 0.8 - 0.03p
+    s(::Val{2}, ::Val{4}, p::Real) = 3.63p - 1.6
+    s(::Val{2}, ::Val{5}, p::Real) = 1.25 - 0.18p
+    s(::Val{2}, ::Val{6}, p::Real) = 1.04 - 0.16p
+    s(::Val{2}, ::Val{7}, p::Real) = 1.97 - 0.04p
+    s(::Val{2}, ::Val{8}, p::Real) = 0.893
+    s(::Val{2}, ::Val{9}, p::Real) = 3.68 - 0.89p
+end
+
 # ╔═╡ Cell order:
 # ╠═9eb5261b-0172-496e-8b37-af69bda54cc8
 # ╠═351f346b-c485-444c-89a9-98ce2b2e61da
 # ╠═2d509ec6-9a55-11ef-32b6-89482b901188
+# ╠═bd1923a0-88e2-4817-bf58-ef4a0ebe3acf
+# ╠═3a706715-c616-4ae6-ac1c-b3e85929c1ca
 # ╠═d5fd0104-6162-46b8-b6fb-100020af7f75
-# ╠═97da13b3-d291-49ee-a268-875a3cdecada
 # ╠═847d415c-a451-425f-ba7e-ee0efa2610dd
 # ╠═a5c2a77b-c7db-4557-81d7-8ac806ebef9a
 # ╠═30bc52fb-f137-4233-bd4c-670cd0b58801
@@ -321,25 +437,39 @@ end
 # ╠═e2dccbdd-c399-476a-9e67-6ed871c8d67e
 # ╠═df809df0-0c87-45d0-8425-8e63a16afa15
 # ╠═385f3c85-2e23-4a01-bfba-d2fdf3f7b4a4
-# ╠═dd5cb545-3048-4993-bd24-9d38c88be075
 # ╠═22b7badb-3c4b-425a-a4ff-4faf5896a989
-# ╠═7e05b5f6-d169-41df-bc6b-87af579cbe6e
 # ╠═f98dfbee-f09e-4987-83d2-60cc9f51aaeb
 # ╠═624292cc-9705-4654-8d3b-1ad1b6b88d7f
 # ╠═43a5597d-acac-472b-8a6e-b803201ae62a
 # ╠═db9b450a-c183-4650-919c-cba8bfab9b49
-# ╠═cb42ae83-105f-4179-b136-050494455469
 # ╠═093c21fa-d06c-4607-ac7b-f3b1e8c04139
 # ╠═75403e1f-db0a-4c17-ade2-69870f55f7d0
 # ╠═427af236-899a-4772-8a12-e8f8320e34d2
+# ╟─517fb628-3b62-4ab0-a749-72a091744ed8
+# ╟─05799234-827a-4b1c-af3f-c5eec598cbae
+# ╟─9830bc40-d236-4629-81f4-899b308ee792
+# ╠═b201cfeb-bc38-4ab9-bf88-eafd9a9d5f3a
 # ╠═618fd47f-5c56-4914-b92a-66b14b64fe5a
+# ╟─2a69d85c-46d2-41d8-85a3-63e051b4a52e
+# ╠═fc817333-6a62-44a8-a6a3-5d9f90fc860f
 # ╠═e41c8512-f0f0-4730-a337-00247adf65a6
+# ╟─9c6eaf0f-069d-4726-8e33-c4f34f878b80
 # ╠═c95bd4ea-c81c-49a3-a13d-b5ea65b3eaa9
+# ╟─3bb51235-3d7c-4325-b463-92eab1e86e8e
+# ╠═80681bd5-2101-4f4c-aa25-f3752a41e606
+# ╟─df8b59f8-507f-49fa-8825-95f6ee8aefd7
+# ╠═d9d18dfe-fdc3-41c1-a75c-190fb86830f4
 # ╠═a2c10f53-b999-42c9-abc2-fa876db201b1
+# ╟─4f7e0c99-84d4-41f2-8a0c-e76018c5cff5
 # ╠═3d66b17b-fc2a-41d8-a76a-2e40bfb8f020
+# ╟─260bbde7-5048-4eaa-a216-e3c10181c200
 # ╠═3dc43aca-7621-4905-9df7-f43a88221016
+# ╟─ff4ae5ec-adc2-478d-9004-0cf18d2a6432
 # ╠═dfa2cebc-7aaf-4539-9f13-07ce060e606e
+# ╟─c02be8d3-e472-4073-9a1f-bf53f33e6558
 # ╠═97dabced-9b4f-48a6-83ca-3335b7cf0244
 # ╠═cb1d558d-b7ed-49fd-b64d-36a631b871e5
 # ╠═a5cb1e26-8996-49c5-bf03-05724c330ec1
 # ╠═c73abcf4-4e6b-4fae-bd2e-b34a2d3de4f4
+# ╟─9dc9f11e-9a61-4509-86ad-af5cddc98f66
+# ╠═53c6305a-860d-410b-b659-ba473d3c8403
