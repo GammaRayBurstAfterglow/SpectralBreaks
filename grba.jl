@@ -13,7 +13,7 @@ using PlutoUI
 # ╔═╡ d5fd0104-6162-46b8-b6fb-100020af7f75
 begin
     using Unitful, UnitfulAstro
-    using Unitful: Hz, cm
+    using Unitful: Hz, GHz, cm
     using UnitfulAstro: foe, Mpc, mJy
 end
 
@@ -400,28 +400,179 @@ md"""
 
 # ╔═╡ 53c6305a-860d-410b-b659-ba473d3c8403
 begin
-    s(k::Integer, b::Integer, p::Real) = s(Val(Int(k)), Val(Int(b)), p)
-    s(::Val{0}, ::Val{1}, p::Real) = 1.64
-    s(::Val{0}, ::Val{2}, p::Real) = 1.84 - 0.4p
-    s(::Val{0}, ::Val{3}, p::Real) = 1.15 - 0.06p
-    s(::Val{0}, ::Val{4}, p::Real) = 3.44p - 1.41
-    s(::Val{0}, ::Val{5}, p::Real) = 1.47 - 0.21p
-    s(::Val{0}, ::Val{6}, p::Real) = 0.94 - 0.14p
-    s(::Val{0}, ::Val{7}, p::Real) = 1.99 - 0.04p
-    s(::Val{0}, ::Val{8}, p::Real) = 0.907
-    s(::Val{0}, ::Val{9}, p::Real) = 3.34 - 0.82p
-    s(::Val{0}, ::Val{10}, p::Real) = 1.213
-    s(::Val{0}, ::Val{11}, p::Real) = 0.597
-    s(::Val{2}, ::Val{1}, p::Real) = 1.06
-    s(::Val{2}, ::Val{2}, p::Real) = 1.76 - 0.38p
-    s(::Val{2}, ::Val{3}, p::Real) = 0.8 - 0.03p
-    s(::Val{2}, ::Val{4}, p::Real) = 3.63p - 1.6
-    s(::Val{2}, ::Val{5}, p::Real) = 1.25 - 0.18p
-    s(::Val{2}, ::Val{6}, p::Real) = 1.04 - 0.16p
-    s(::Val{2}, ::Val{7}, p::Real) = 1.97 - 0.04p
-    s(::Val{2}, ::Val{8}, p::Real) = 0.893
-    s(::Val{2}, ::Val{9}, p::Real) = 3.68 - 0.89p
+    # k = 0:
+    s(::Val{0}, ::Val{1}, _::Number) = 1.64
+    s(::Val{0}, ::Val{2}, p::Number) = 1.84 - 0.4p
+    s(::Val{0}, ::Val{3}, p::Number) = 1.15 - 0.06p
+    s(::Val{0}, ::Val{4}, p::Number) = 3.44p - 1.41
+    s(::Val{0}, ::Val{5}, p::Number) = 1.47 - 0.21p
+    s(::Val{0}, ::Val{6}, p::Number) = 0.94 - 0.14p
+    s(::Val{0}, ::Val{7}, p::Number) = 1.99 - 0.04p
+    s(::Val{0}, ::Val{8}, _::Number) = 0.907
+    s(::Val{0}, ::Val{9}, p::Number) = 3.34 - 0.82p
+    s(::Val{0}, ::Val{10}, _::Number) = 1.213
+    s(::Val{0}, ::Val{11}, _::Number) = 0.597
+    # k = 2:
+    s(::Val{2}, ::Val{1}, _::Number) = 1.06
+    s(::Val{2}, ::Val{2}, p::Number) = 1.76 - 0.38p
+    s(::Val{2}, ::Val{3}, p::Number) = 0.8 - 0.03p
+    s(::Val{2}, ::Val{4}, p::Number) = 3.63p - 1.6
+    s(::Val{2}, ::Val{5}, p::Number) = 1.25 - 0.18p
+    s(::Val{2}, ::Val{6}, p::Number) = 1.04 - 0.16p
+    s(::Val{2}, ::Val{7}, p::Number) = 1.97 - 0.04p
+    s(::Val{2}, ::Val{8}, _::Number) = 0.893
+    s(::Val{2}, ::Val{9}, p::Number) = 3.68 - 0.89p
+    """
+        s(k, b, p)
+
+    TODO add docstring here
+    """
+    s(k::Integer, b::Integer, p::Number) = s(Val(Int(k)), Val(Int(b)), p)
 end
+
+# ╔═╡ 20729c7b-2eed-4a72-b2e6-007cea58ea30
+md"""
+## Break frequency function
+"""
+
+# ╔═╡ 61f7cf2e-71a9-447b-9c56-8c6d09cc6cfe
+breakfrequency(k, b, t) = error("To be implemented")
+
+# ╔═╡ 33cd8279-66b5-4015-a29c-67f2aa63e120
+begin
+    # k = 0:
+    function breakfrequency(::Val{0}, ::Val{1}, _)
+        pscale = ((p-1) / (3p+2))^(3//5)
+        1.24GHz * pscale * (ε_B * n₀^3 * E_52)^(1//5) / (ε̄ₑ * (1 + z))
+    end
+
+    breakfrequency(::Val{0}, ::Val{2}, t) =
+        3.73e6GHz * (p - 0.67) * ε̄ₑ^2 * √(E_52 * ε_B * (1 + z) / t^3)
+
+    breakfrequency(::Val{0}, ::Val{3}, t) =
+        6.37e4GHz * (p - 0.46)*exp(-1.16p) / (n₀ * √(ε_B * (1 + z) * E_52 * t))
+
+    breakfrequency(::Val{0}, ::Val{4}, t) =
+        5.04e7GHz * (p - 1.22) * √((1+z) * ε_B * E_52 / t^3)
+
+    function breakfrequency(::Val{0}, ::Val{5}, t)
+        pscale = (4.03 - p) * exp(2.34p)
+        # TODO: name these variables better
+        allotherscalenumer = (ε̄ₑ^(4p-4) * ε_B^(p+2) * n₀^4 * E_52^(p+2))
+        allotherscaledenom = (1+z)^(6-p) * t^(3p+2)
+        3.59GHz * pscale * (allotherscalenumer/allotherscaledenom)^(1/(2p+8))
+    end
+    function breakfrequency(::Val{0}, ::Val{6}, t)
+        scalenumer = ε̄ₑ^(4p-4) * ε_B^(p-1) * n₀^2 * E_52^(p+1)
+        scaledenom = (1+z)^(7-p) * t^(3p+3)
+        3.23e3GHz * (p-1.76) * (scalenumer / scaledenom)^(1/(2p+10))
+    end
+    function breakfrequency(::Val{0}, ::Val{7}, t)
+        pscale = ((3p-1) / (3p+2))^(8//5)
+        fifthscale = (ε̄ₑ^4 * ε_B)^(-2//5)
+        tenthscale = ((n₀^3 * t^3) / (E_52 * (1+z)^13))^(1//10)
+        0.112GHz * pscale * fifthscale * tenthscale
+    end
+    breakfrequency(::Val{0}, ::Val{8}, t) =
+        198GHz * (n₀ * E_52)^(1//6) / √((1+z) * t)
+
+    function breakfrequency(::Val{0}, ::Val{9}, t)
+        scale = ε̄ₑ^2 * √((1+z) * ε_B * E_52 / t^3)
+        3.94e6GHz * (p - 0.74) * scale
+    end
+    function breakfrequency(::Val{0}, ::Val{10}, t)
+        scalenumer = (ε_B^12 * n₀^11 * E_52^7)^(1//10)
+        scaledenom = √((1+z) * t)
+        13.2GHz * scalenumer / scaledenom
+    end
+    breakfrequency(::Val{0}, ::Val{11}, t) =
+        5.86e3GHz / (n₀ * √((1+z) * ε_B^3 * E_52 * t))
+end
+
+# ╔═╡ db423a15-7e3c-4ec8-a537-40b5ec513860
+begin
+    # k = 2:
+    function breakfrequency(::Val{2}, ::Val{1}, t)
+        pscale = ((p-1) / (3p+2))^(3//5)
+        8.31GHz * pscale * (ε_B * A_star^6 / (E_52^2 * t^-3 * (1+z)^2))^(1//5)
+    end
+    function breakfrequency(::Val{2}, ::Val{2}, t)
+        scale = √((1+z) * E_52 * ε_B / t^3) / ε̄ₑ^2
+        4.02e6GHz * (p - 0.69) * scale
+    end
+    function breakfrequency(::Val{2}, ::Val{3}, t)
+    end
+    function breakfrequency(::Val{2}, ::Val{4}, t)
+    end
+    function breakfrequency(::Val{2}, ::Val{5}, t)
+    end
+    function breakfrequency(::Val{2}, ::Val{6}, t)
+    end
+    function breakfrequency(::Val{2}, ::Val{7}, t)
+    end
+    function breakfrequency(::Val{2}, ::Val{8}, t)
+    end
+    function breakfrequency(::Val{2}, ::Val{9}, t)
+    end
+end
+
+
+# ╔═╡ 58e961f9-218e-4780-acec-81c7e536c20c
+md"""
+## Slope function
+"""
+
+# ╔═╡ 703bd92b-a962-42f3-8e78-b32bb8c60feb
+begin
+    slopebelow(::Val{1}, ::Number) = 2
+    slopebelow(::Val{2}, ::Number) = 1//3
+    slopebelow(::Val{3}, p::Number) = (1 - p) // 2
+    slopebelow(::Val{4}, ::Number) = 2
+    slopebelow(::Val{5}, ::Number) = 5//2
+    slopebelow(::Val{6}, ::Number) = 5//2
+    slopebelow(::Val{7}, ::Number) = 2
+    slopebelow(::Val{8}, ::Number) = 11//8
+    slopebelow(::Val{9}, ::Number) = -1//2
+    slopebelow(::Val{10}, ::Number) = 11//8
+    slopebelow(::Val{11}, ::Number) = 1//3
+    """
+        slopebelow(b, p)
+
+    TODO write docstring here about β₁
+    """
+    slopebelow(b::Integer, p::Number) = slopebelow(Val(Int(b)), p)
+end
+
+# ╔═╡ f73209ba-f495-4e6a-9e07-1dcb30579f8f
+begin
+    slopeabove(::Val{1}, ::Number) = 1//3
+    slopeabove(::Val{2}, p::Number) = (1-p)//2
+    slopeabove(::Val{3}, p::Number) = -p//2
+    slopeabove(::Val{4}, ::Number) = 5//2
+    slopeabove(::Val{5}, p::Number) = (1-p)//2
+    slopeabove(::Val{6}, p::Number) = -p//2
+    slopeabove(::Val{7}, ::Number) = 11//8
+    slopeabove(::Val{8}, ::Number) = -1//2
+    slopeabove(::Val{9}, p::Number) = -p//2
+    slopeabove(::Val{10}, ::Number) = 1//3
+    slopeabove(::Val{11}, ::Number) = -1//2
+    """
+        slopeabove(b, p)
+
+    TODO write docstring here about β₂
+    """
+    slopeabove(b::Integer, p::Number) = slopeabove(Val(Int(b)), p)
+end
+
+# ╔═╡ 9f49f5c5-8499-45ff-8eb8-abdf7838574c
+md"""
+## Equation reference
+"""
+
+# ╔═╡ 407bdeaa-da92-4263-8e04-ac5f113e4d15
+md"""
+TODO: rewrite equations from Granot and Sari here
+"""
 
 # ╔═╡ Cell order:
 # ╠═9eb5261b-0172-496e-8b37-af69bda54cc8
@@ -473,3 +624,12 @@ end
 # ╠═c73abcf4-4e6b-4fae-bd2e-b34a2d3de4f4
 # ╟─9dc9f11e-9a61-4509-86ad-af5cddc98f66
 # ╠═53c6305a-860d-410b-b659-ba473d3c8403
+# ╟─20729c7b-2eed-4a72-b2e6-007cea58ea30
+# ╠═61f7cf2e-71a9-447b-9c56-8c6d09cc6cfe
+# ╠═33cd8279-66b5-4015-a29c-67f2aa63e120
+# ╠═db423a15-7e3c-4ec8-a537-40b5ec513860
+# ╟─58e961f9-218e-4780-acec-81c7e536c20c
+# ╠═703bd92b-a962-42f3-8e78-b32bb8c60feb
+# ╠═f73209ba-f495-4e6a-9e07-1dcb30579f8f
+# ╟─9f49f5c5-8499-45ff-8eb8-abdf7838574c
+# ╟─407bdeaa-da92-4263-8e04-ac5f113e4d15
