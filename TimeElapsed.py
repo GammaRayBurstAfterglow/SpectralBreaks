@@ -120,8 +120,8 @@ def main():
     df = pd.read_csv("output.txt")
 
     # Saves the outliar values to head.txt and tail.txt
-    np.savetxt(r'head.txt', df.head(3).values, '%f')
-    np.savetxt(r'tail.txt', df.tail(3).values, '%f')
+    np.savetxt(r'head.txt', df.head(10).values, '%f')
+    np.savetxt(r'tail.txt', df.tail(10).values, '%f')
 
 
 if __name__ == "__main__":
