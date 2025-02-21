@@ -97,14 +97,13 @@ def main():
         for file, content in error_output:
             f.write(f"File: {file}")
             f.write(f"Content: {content}\n")
+            f.write(f"="*105 + "\n")
 
 
     ########################
     # Using Processed Data #
     ########################
-
-    # Still need to implement find -iname '*.err*' and output it to a text file
-
+    
     # Loads the outputted file from TimeElapsed.sh
     data = np.loadtxt('output.txt')
 
